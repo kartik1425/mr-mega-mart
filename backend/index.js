@@ -1,6 +1,7 @@
 const env = require('./config/env')
 const express = require('express')
 const app = express()
+app.set('trust proxy', 1)
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const rateLimit = require('express-rate-limit')
