@@ -9,15 +9,22 @@ exports.createAddress = async (req, res) => {
     const hasDefaultAddress = await UserAddress.exists({ userId, isDefault: true })
     const setAsDefault = isDefault !== undefined ? Boolean(isDefault) : !hasDefaultAddress
 
+    const safeFullName = (fullName || req.body.contactName || req.body.addressTitle || 'Customer').trim()
+    const safePhoneNumber = (phoneNumber || req.body.phone || '0000000000').trim()
+    const safeAddress = (address || req.body.fullAddress || req.body.street || 'Address').trim()
+    const safeCity = (city || 'City').trim()
+    const safeState = (state || req.body.district || 'State').trim()
+    const safePostalCode = (postalCode || req.body.zipCode || '000000').trim()
+
     const newAddress = new UserAddress({
       userId,
-      fullName: fullName.trim(),
-      phoneNumber: phoneNumber.trim(),
-      address: address.trim(),
-      city: city.trim(),
-      state: state.trim(),
-      postalCode: postalCode.trim(),
-      country: country ? country.trim() : 'USA',
+      fullName: safeFullName,
+      phoneNumber: safePhoneNumber,
+      address: safeAddress,
+      city: safeCity,
+      state: safeState,
+      postalCode: safePostalCode,
+      country: country ? country.trim() : 'India',
       addressType: addressType || 'home',
       isDefault: setAsDefault,
     })
