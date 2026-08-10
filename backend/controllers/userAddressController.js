@@ -206,7 +206,7 @@ exports.getDefaultAddress = async (req, res) => {
   }
 }
 
-const checkForDefaultAddress = async (userId, addressIdToExclude = null) => {
+async function checkForDefaultAddress(userId, addressIdToExclude = null) {
   try {
     const filter = { userId, _id: { $ne: addressIdToExclude } }
     await UserAddress.updateMany(filter, { isDefault: false })
