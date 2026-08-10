@@ -48,7 +48,7 @@ async function initDatabase() {
 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
-      await mongoose.connect(env.MONGODB_URI, { serverSelectionTimeoutMS: timeoutMs })
+      await mongoose.connect(env.MONGODB_URI, { serverSelectionTimeoutMS: timeoutMs, family: 4 })
       logger.info({ event: 'mongodb_connected', attempt }, '[MongoDB] Connected successfully to primary database')
       return
     } catch (err) {
@@ -59,8 +59,8 @@ async function initDatabase() {
     }
   }
 
-  if (env.NODE_ENV === 'production') {
-    logger.error({ event: 'mongodb_prod_connection_failed' }, '[MongoDB] Production connection to MongoDB Atlas failed after retries.')
+  if (env.NODE_ENV === 'production' || process.env.RENDER || process.env.PORT) {
+    logger.error({ event: 'mongodb_prod_connection_failed' }, '[MongoDB] Connection to MongoDB Atlas failed after retries. Skipping memory server fallback on cloud platform.')
     return
   }
     try {
