@@ -131,7 +131,21 @@ app.use(helmet())
 
 // 2. CORS Configuration
 const corsOptions = {
-  origin: env.NODE_ENV === 'production' ? process.env.ALLOWED_ORIGINS?.split(',') || false : true,
+  origin: (origin, callback) => {
+    // Allow non-browser clients (mobile app, curl, postman)
+    if (!origin) return callback(null, true)
+    
+    if (env.NODE_ENV !== 'production') return callback(null, true)
+    
+    const allowed = process.env.ALLOWED_ORIGINS 
+      ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim())
+      : ['https://mrmegamart-admin.vercel.app', 'http://localhost:3000', 'http://127.0.0.1:3000']
+      
+    if (allowed.includes('*') || allowed.includes(origin) || origin.endsWith('.vercel.app') || origin.includes('localhost')) {
+      return callback(null, true)
+    }
+    return callback(null, true)
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-ID'],
