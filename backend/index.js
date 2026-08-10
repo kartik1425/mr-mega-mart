@@ -43,15 +43,25 @@ app.use(requestLogger)
 // Connect to MongoDB & Lifecycle Events with Resilient MongoMemoryServer Fallback
 async function initDatabase() {
   const timeoutMs = env.NODE_ENV === 'production' ? 15000 : 5000
-  try {
-    await mongoose.connect(env.MONGODB_URI, { serverSelectionTimeoutMS: timeoutMs })
-    logger.info({ event: 'mongodb_connected' }, '[MongoDB] Connected successfully to primary database')
-  } catch (err) {
-    logger.warn({ event: 'mongodb_primary_failed', error: err.message }, `[MongoDB] Primary connection failed (${err.message}).`)
-    if (env.NODE_ENV === 'production') {
-      logger.error({ event: 'mongodb_prod_connection_failed' }, '[MongoDB] Production connection to MongoDB Atlas failed. Check MONGODB_URI and Atlas IP Access List (0.0.0.0/0).')
+  const maxRetries = env.NODE_ENV === 'production' ? 5 : 1
+
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      await mongoose.connect(env.MONGODB_URI, { serverSelectionTimeoutMS: timeoutMs })
+      logger.info({ event: 'mongodb_connected', attempt }, '[MongoDB] Connected successfully to primary database')
       return
+    } catch (err) {
+      logger.warn({ event: 'mongodb_primary_failed', attempt, error: err.message }, `[MongoDB] Primary connection attempt ${attempt}/${maxRetries} failed (${err.message}).`)
+      if (attempt < maxRetries) {
+        await new Promise(res => setTimeout(res, 3000))
+      }
     }
+  }
+
+  if (env.NODE_ENV === 'production') {
+    logger.error({ event: 'mongodb_prod_connection_failed' }, '[MongoDB] Production connection to MongoDB Atlas failed after retries.')
+    return
+  }
     try {
       const { MongoMemoryServer } = require('mongodb-memory-server')
       const mongoServer = await MongoMemoryServer.create({
