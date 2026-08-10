@@ -2,7 +2,7 @@ require('dotenv').config()
 
 const NODE_ENV = process.env.NODE_ENV || 'development'
 const PORT = parseInt(process.env.PORT || '5001', 10)
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/mrmegamart'
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://mrmegamartadmin:8rPOResrPU7FtkYg@mr-mega-mart.3na3skh.mongodb.net/mrmegamart?retryWrites=true&w=majority'
 
 // Logging & Observability Configuration
 const LOG_LEVEL = process.env.LOG_LEVEL || 'info'
