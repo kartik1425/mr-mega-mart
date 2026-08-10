@@ -1,0 +1,51 @@
+# ===========================
+# MR Mega Mart Root .gitignore
+# ===========================
+
+# Environment & secrets
+.env
+.env.*
+**/.env
+**/.env.*
+
+# Node
+node_modules/
+package-lock.json
+
+# Flutter / Dart
+.dart_tool/
+.pub-cache/
+.pub/
+build/
+*.g.dart
+
+# Build artifacts
+flutter_app/build/
+flutter_app/android/app/debug/
+flutter_app/android/app/profile/
+flutter_app/android/app/release/
+flutter_app/android/local.properties
+flutter_app/android/key.properties
+
+# IDE
+.vscode/
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# OS
+.DS_Store
+Thumbs.db
+*.log
+
+# Scratch / test files with potential secrets
+backend/scratch/
+*.bak
+*.tmp
+*.temp
+
+# Elastic Beanstalk (legacy)
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml

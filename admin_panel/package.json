@@ -1,0 +1,10 @@
+{
+  "name": "mr-mega-mart-admin-panel",
+  "version": "1.0.0",
+  "description": "MR Mega Mart Administrative Dashboard Application",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve -s . -p 3000"
+  },
+  "dependencies": {}
+}
