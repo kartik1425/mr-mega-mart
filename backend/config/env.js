@@ -2,10 +2,9 @@ require('dotenv').config()
 
 const NODE_ENV = process.env.NODE_ENV || 'development'
 const PORT = parseInt(process.env.PORT || '5001', 10)
-const rawMongoUri = process.env.MONGODB_URI
-const MONGODB_URI = (!rawMongoUri || rawMongoUri.includes('8rPOResrPU7FtkYg') || rawMongoUri.includes('<db_password>'))
-  ? 'mongodb+srv://mrmegamartadmin:bK6wV9lU5QpSGT6J@mr-mega-mart.3na3skh.mongodb.net/mrmegamart?retryWrites=true&w=majority'
-  : rawMongoUri
+const MONGODB_URI = (process.env.MONGODB_URI && process.env.MONGODB_URI.includes('bK6wV9lU5QpSGT6J'))
+  ? process.env.MONGODB_URI
+  : 'mongodb+srv://mrmegamartadmin:bK6wV9lU5QpSGT6J@mr-mega-mart.3na3skh.mongodb.net/mrmegamart?retryWrites=true&w=majority'
 
 // Logging & Observability Configuration
 const LOG_LEVEL = process.env.LOG_LEVEL || 'info'
