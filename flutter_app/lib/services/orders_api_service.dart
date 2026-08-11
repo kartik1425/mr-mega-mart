@@ -18,7 +18,7 @@ class OrdersApiService{
       return CheckOrderStatusResponse.fromJson(response);
     }
     catch (e) {
-      print("error : ${e}");
+
       throw Exception('Failed to check order status: $e');
     }
   }
@@ -33,7 +33,7 @@ class OrdersApiService{
       return GetUserOrdersResponse.fromJson(response);
     }
     catch (e) {
-      print("error : ${e}");
+
       throw Exception('Failed to check order status: $e');
     }
   }
@@ -48,7 +48,7 @@ class OrdersApiService{
       return OrderDetailsResponse.fromJson(response);
     }
     catch (e) {
-      print("error : ${e}");
+
       throw Exception('Failed to get order details: $e');
     }
   }
@@ -63,7 +63,7 @@ class OrdersApiService{
       return OrderDetailsResponse.fromJson(response);
     }
     catch (e) {
-      print("error : ${e}");
+
       throw Exception('Failed to get order details: $e');
     }
   }

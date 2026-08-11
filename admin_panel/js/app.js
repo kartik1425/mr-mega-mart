@@ -4,8 +4,14 @@ class AdminRouter {
   static routes = {
     '/login': 'renderLogin',
     '/dashboard': 'renderDashboard',
+    '/products': 'renderProducts',
     '/inventory': 'renderInventory',
+    '/categories': 'renderCategories',
+    '/deals': 'renderDeals',
     '/orders': 'renderOrders',
+    '/users': 'renderUsers',
+    '/reviews': 'renderReviews',
+    '/subscriptions': 'renderSubscriptions',
   };
 
   static currentRoute = '/dashboard';
@@ -114,19 +120,56 @@ class AdminRouter {
         </div>
 
         <ul class="nav-list">
+          <li class="nav-section-title">MAIN</li>
           <li>
             <a href="#/dashboard" class="nav-link ${activeRoute === '/dashboard' ? 'active' : ''}">
               📊 Dashboard
             </a>
           </li>
+
+          <li class="nav-section-title">CATALOG</li>
           <li>
-            <a href="#/inventory" class="nav-link ${activeRoute === '/inventory' ? 'active' : ''}">
-              📦 Inventory Management
+            <a href="#/products" class="nav-link ${activeRoute === '/products' ? 'active' : ''}">
+              🍎 Products Management
             </a>
           </li>
           <li>
+            <a href="#/inventory" class="nav-link ${activeRoute === '/inventory' ? 'active' : ''}">
+              📦 Inventory Control
+            </a>
+          </li>
+          <li>
+            <a href="#/categories" class="nav-link ${activeRoute === '/categories' ? 'active' : ''}">
+              📁 Categories Hierarchy
+            </a>
+          </li>
+          <li>
+            <a href="#/deals" class="nav-link ${activeRoute === '/deals' ? 'active' : ''}">
+              🏷️ Deals & Banners
+            </a>
+          </li>
+
+          <li class="nav-section-title">SALES</li>
+          <li>
             <a href="#/orders" class="nav-link ${activeRoute === '/orders' ? 'active' : ''}">
               🛒 Order Management
+            </a>
+          </li>
+          <li>
+            <a href="#/reviews" class="nav-link ${activeRoute === '/reviews' ? 'active' : ''}">
+              ⭐ Review Moderation
+            </a>
+          </li>
+
+          <li class="nav-section-title">CUSTOMERS</li>
+          <li>
+            <a href="#/users" class="nav-link ${activeRoute === '/users' ? 'active' : ''}">
+              👥 Customer Accounts
+            </a>
+          </li>
+          <li>
+            <a href="#/subscriptions" class="nav-link ${activeRoute === '/subscriptions' ? 'active' : ''}">
+              💳 Subscriptions & Trials
             </a>
           </li>
         </ul>
@@ -163,12 +206,30 @@ class AdminRouter {
     if (activeRoute === '/dashboard') {
       pageTitleText.textContent = 'Dashboard Overview';
       window.AdminDashboard.render(contentContainer);
+    } else if (activeRoute === '/products') {
+      pageTitleText.textContent = 'Product Catalog Management';
+      window.AdminProducts.render(contentContainer);
     } else if (activeRoute === '/inventory') {
-      pageTitleText.textContent = 'Inventory & Stock Management';
+      pageTitleText.textContent = 'Inventory & Stock Control';
       window.AdminInventory.render(contentContainer);
+    } else if (activeRoute === '/categories') {
+      pageTitleText.textContent = 'Category Hierarchy & Management';
+      window.AdminCategories.render(contentContainer);
+    } else if (activeRoute === '/deals') {
+      pageTitleText.textContent = 'Promotional Deals & Banners';
+      window.AdminDeals.render(contentContainer);
     } else if (activeRoute === '/orders') {
-      pageTitleText.textContent = 'Order State Machine';
+      pageTitleText.textContent = 'Order State Machine & Management';
       window.AdminOrders.render(contentContainer);
+    } else if (activeRoute === '/users') {
+      pageTitleText.textContent = 'Customer Accounts & Access';
+      window.AdminUsers.render(contentContainer);
+    } else if (activeRoute === '/reviews') {
+      pageTitleText.textContent = 'Product Reviews Moderation';
+      window.AdminReviews.render(contentContainer);
+    } else if (activeRoute === '/subscriptions') {
+      pageTitleText.textContent = 'Active Subscriptions & Trials';
+      window.AdminSubscriptions.render(contentContainer);
     } else {
       window.location.hash = '/dashboard';
     }
@@ -179,3 +240,4 @@ document.addEventListener('DOMContentLoaded', () => {
   window.AdminRouter = AdminRouter;
   AdminRouter.init();
 });
+

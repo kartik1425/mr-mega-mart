@@ -45,7 +45,7 @@ class OrderCard extends StatelessWidget {
             }
           },
           borderRadius: BorderRadius.circular(8.0),
-          splashColor: Colors.grey.withOpacity(0.2),
+          splashColor: Colors.grey.withValues(alpha: 0.2),
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -66,7 +66,7 @@ class OrderCard extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8.0, vertical: 4.0),
                       decoration: BoxDecoration(
-                        color: statusColor.withOpacity(0.15),
+                        color: statusColor.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(

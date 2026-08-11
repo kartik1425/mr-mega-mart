@@ -83,13 +83,13 @@ class _DealsSectionState extends State<DealsSection> {
                           icon: Icons.shopping_bag,
                           label: "My Orders",
                           onTap: () async {
-                            if(mounted){
-                              if(await isAuthenticated()){
-                                context.pushNamed("myOrdersFromHome");
-                              }
-                              else{
-                                context.goNamed("signup");
-                              }
+                            final isAuth = await isAuthenticated();
+                            if (isAuth) {
+                              if (!context.mounted) return;
+                              context.pushNamed("myOrdersFromHome");
+                            } else {
+                              if (!context.mounted) return;
+                              context.goNamed("signup");
                             }
                           },
                         ),
@@ -98,14 +98,14 @@ class _DealsSectionState extends State<DealsSection> {
                           icon: Icons.receipt_long,
                           label: "My Last Order",
                           onTap: () async {
-                            if(mounted){
-                              if(await isAuthenticated()){
-                                context.pushNamed("myLastOrder");
-                            }
-                            else{
+                            final isAuth = await isAuthenticated();
+                            if (isAuth) {
+                              if (!context.mounted) return;
+                              context.pushNamed("myLastOrder");
+                            } else {
+                              if (!context.mounted) return;
                               context.goNamed("signup");
                             }
-                          }
                           },
                         ),
                         const SizedBox(width: 8.0),
@@ -113,14 +113,14 @@ class _DealsSectionState extends State<DealsSection> {
                           icon: Icons.favorite,
                           label: "Favourite Products",
                           onTap: () async {
-                            if(mounted){
-                              if(await isAuthenticated()){
-                                context.pushNamed("favouriteProducts");
-                            }
-                            else{
+                            final isAuth = await isAuthenticated();
+                            if (isAuth) {
+                              if (!context.mounted) return;
+                              context.pushNamed("favouriteProducts");
+                            } else {
+                              if (!context.mounted) return;
                               context.goNamed("signup");
                             }
-                          }
                           },
                         ),
                         const SizedBox(width: 8.0),
@@ -128,14 +128,14 @@ class _DealsSectionState extends State<DealsSection> {
                           icon: Icons.person,
                           label: "My Profile",
                           onTap: () async {
-                            if(mounted){
-                              if(await isAuthenticated()){
-                            context.pushNamed("myProfilePage");
+                            final isAuth = await isAuthenticated();
+                            if (isAuth) {
+                              if (!context.mounted) return;
+                              context.pushNamed("myProfilePage");
+                            } else {
+                              if (!context.mounted) return;
+                              context.goNamed("signup");
                             }
-                            else{
-                            context.goNamed("signup");
-                            }
-                          }
                           },
                         ),
                       ],

@@ -51,7 +51,7 @@ class _HorizontalScrollWidgetState extends State<HorizontalScrollWidget> {
                 style: TextStyle(
                   color: selectedIndex == index
                       ? white
-                      : white.withOpacity(0.6),
+                      : white.withValues(alpha: 0.6),
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
                 ),

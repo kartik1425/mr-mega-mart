@@ -104,11 +104,36 @@ class _AccountPageState extends State<AccountPage> {
                     },
                   ),
                   BasicListItem(
+                    text: "About MR Mega Mart",
+                    onTap: () {
+                      context.pushNamed('aboutPage');
+                    },
+                  ),
+                  BasicListItem(
+                    text: "Privacy Policy",
+                    onTap: () {
+                      context.pushNamed('privacyPolicyPage');
+                    },
+                  ),
+                  BasicListItem(
                     text: "Sign Out",
                     onTap: () {
                       _signOutBloc.add(const SignOutRequested());
                     },
                   ),
+                  const SizedBox(height: 32.0),
+                  const Center(
+                    child: Text(
+                      'Made by Kartik Gupta',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Color(0xFF94A3B8),
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24.0),
                 ],
               ),
             ),

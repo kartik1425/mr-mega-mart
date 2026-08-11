@@ -100,7 +100,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
       final likedProductIds = likedProducts.map((e) => e.productId).toSet();
       emit(state.copyWith(likedProductIds: likedProductIds));
     } catch (error) {
-      print("Failed to fetch liked products: $error");
+      // Error handled silently
     }
   }
 
@@ -110,7 +110,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
       final cartItemIds = itemsInCart.map((e) => e.productId).toSet();
       emit(state.copyWith(itemsInCart: cartItemIds));
     } catch (error) {
-      print("Failed to fetch cart items: $error");
+      // Error handled silently
     }
   }
 
@@ -120,7 +120,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
       final updatedLikedProductIds = Set<String>.from(state.likedProductIds)..add(event.productId);
       emit(state.copyWith(likedProductIds: updatedLikedProductIds));
     } catch (error) {
-      print("Failed to like product: $error");
+      // Error handled silently
     }
   }
 
@@ -130,7 +130,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
       final updatedLikedProductIds = Set<String>.from(state.likedProductIds)..remove(event.productId);
       emit(state.copyWith(likedProductIds: updatedLikedProductIds));
     } catch (error) {
-      print("Failed to remove like: $error");
+      // Error handled silently
     }
   }
 

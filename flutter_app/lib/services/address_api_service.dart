@@ -23,7 +23,7 @@ class AddressApiService{
       return CreateAddressResponse.fromJson(response);
     }
     catch (e) {
-      print("error : ${e}");
+
       throw Exception('Failed to create address: $e');
     }
   }
@@ -38,7 +38,7 @@ class AddressApiService{
       return GetAddressResponse.fromJson(response);
     }
     catch (e) {
-      print("error : ${e}");
+
       throw Exception('Failed to get address: $e');
     }
   }
@@ -54,7 +54,7 @@ class AddressApiService{
       return DeleteAddressResponse.fromJson(response);
     }
     catch (e) {
-      print("error : ${e}");
+
       throw Exception('Failed to delete address: $e');
     }
   }
@@ -71,7 +71,7 @@ class AddressApiService{
       return UpdateAddressResponse.fromJson(response);
     }
     catch (e) {
-      print("error : ${e}");
+
       throw Exception('Failed to update address: $e');
     }
   }
@@ -85,7 +85,7 @@ class AddressApiService{
       return DefaultAddressResponse.fromJson(response);
     }
     catch (e) {
-      print("error : ${e}");
+
       throw Exception('Failed to get default address: $e');
     }
   }

@@ -39,7 +39,7 @@ class CartTopBar extends StatelessWidget implements PreferredSizeWidget {
           Row(
             children: [
               Text(
-                "\$${subtotalAmount.toStringAsFixed(0)} subtotal",
+                "₹${subtotalAmount.toStringAsFixed(0)} subtotal",
                 style: const TextStyle(
                   fontSize: 14,
                   color: Colors.black54,

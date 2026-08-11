@@ -30,7 +30,9 @@ class _MyAddressesPageState extends State<MyAddressesPage> {
 
     // Check the result if "success", trigger fetching again
     if (result == "success" && mounted) {
-      blocContext.read<AddressBloc>().add(const GetAddressesEvent());
+      if (blocContext.mounted) {
+        blocContext.read<AddressBloc>().add(const GetAddressesEvent());
+      }
     }
   }
 

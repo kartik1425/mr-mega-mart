@@ -18,7 +18,7 @@ class TrialApiService {
       );
       return CreateTrialResponse.fromJson(response);
     } catch (e) {
-      print("error : ${e}");
+
       throw Exception('Failed to create trial: $e');
     }
   }
@@ -32,7 +32,7 @@ class TrialApiService {
       );
       return GetActiveTrialResponse.fromJson(response);
     } catch (e) {
-      print("error : ${e}");
+
       throw Exception('Failed to get active trial details: $e');
     }
   }

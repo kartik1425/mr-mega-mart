@@ -94,7 +94,7 @@ class _CreateReviewPageState extends State<CreateReviewPage> {
                     direction: Axis.horizontal,
                     allowHalfRating: true,
                     glow: true,
-                    glowColor: primaryLightColor.withOpacity(0.5),
+                    glowColor: primaryLightColor.withValues(alpha: 0.5),
                     itemCount: 5,
                     itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
                     itemBuilder: (context, _) => const Icon(

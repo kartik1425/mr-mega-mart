@@ -14,7 +14,7 @@ class AiSuggestionApiService {
       );
       return ProductsResponse.fromJson(response);
     } catch (e) {
-      print("error : ${e}");
+
       throw Exception('Failed to fetch AI suggestions: $e');
     }
   }

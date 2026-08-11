@@ -1,5 +1,6 @@
 /*
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:flutter/foundation.dart';
 import '../utils/auth_check.dart';
 
 class AnalyticsService {
@@ -8,13 +9,13 @@ class AnalyticsService {
   Future<void> logEvent(String eventName, {Map<String, dynamic>? parameters}) async {
     try {
       if (!await isAuthenticated()) {
-        print("User is not authenticated. Skipping analytics.");
+        debugPrint("User is not authenticated. Skipping analytics.");
         return;
       }
 
       final user = await getUser();
       if (user == null) {
-        print("Failed to fetch user data. Skipping analytics.");
+        debugPrint("Failed to fetch user data. Skipping analytics.");
         return;
       }
 
@@ -33,9 +34,9 @@ class AnalyticsService {
         parameters: castedParameters,
       );
 
-      print("Event logged: $eventName, parameters: $castedParameters");
+      debugPrint("Event logged: $eventName, parameters: $castedParameters");
     } catch (e) {
-      print("Error logging event: $e");
+      debugPrint("Error logging event: $e");
     }
   }
 

@@ -29,7 +29,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
     if (widget.orderId != null) {
       _orderDetailsBloc.add(OrderDetailsRequested(orderId: widget.orderId!));
     } else {
-      _orderDetailsBloc.add(LatestOrderDetailsRequested());
+      _orderDetailsBloc.add(const LatestOrderDetailsRequested());
     }
   }
 
@@ -116,7 +116,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                                 horizontal: 8.0, vertical: 4.0),
                             decoration: BoxDecoration(
                               color:
-                              _getStatusColor(order.status).withOpacity(0.15),
+                              _getStatusColor(order.status).withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Text(
@@ -170,7 +170,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                                 pathParameters: {"productId": item.productId});
                           },
                         );
-                      }).toList(),
+                      }),
 
                       const SizedBox(height: 24),
 
@@ -195,7 +195,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 const Text("Product Total"),
-                                Text("\$${productTotal.toStringAsFixed(2)}"),
+                                Text("₹${productTotal.toStringAsFixed(2)}"),
                               ],
                             ),
                             const SizedBox(height: 8),
@@ -203,7 +203,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 const Text("Cargo Fee"),
-                                Text("\$${cargoFee.toStringAsFixed(2)}"),
+                                Text("₹${cargoFee.toStringAsFixed(2)}"),
                               ],
                             ),
                             const Divider(height: 24),
@@ -215,7 +215,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                                 Text(
-                                  "\$${order.amount.toStringAsFixed(2)}",
+                                  "₹${order.amount.toStringAsFixed(2)}",
                                   style:
                                   const TextStyle(fontWeight: FontWeight.bold),
                                 ),

@@ -155,17 +155,15 @@ class _TrialProductListPageState extends State<TrialProductListPage> {
                             trialProduct: trialProduct,
                             onTrialNowClicked: () async {
                               if(await isSubscribed()){
-                                if(mounted){
-                                  context.pushNamed(
-                                    'trialProductDetailsPage',
-                                    pathParameters: {'productId': trialProduct.id},
-                                  );
-                                }
+                                if (!context.mounted) return;
+                                context.pushNamed(
+                                  'trialProductDetailsPage',
+                                  pathParameters: {'productId': trialProduct.id},
+                                );
                               }
                               else{
-                                if(mounted){
-                                  context.pushNamed("subscriptionPromotionPage");
-                                }
+                                if (!context.mounted) return;
+                                context.pushNamed("subscriptionPromotionPage");
                               }
                             },
                           );

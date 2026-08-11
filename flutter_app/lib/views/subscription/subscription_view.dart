@@ -17,7 +17,7 @@ import 'package:mrmegamart_app/models/user/user_pref_model.dart';
 import 'package:mrmegamart_app/theme/colors.dart';
 
 class SubscriptionView extends StatefulWidget {
-  const SubscriptionView({Key? key}) : super(key: key);
+  const SubscriptionView({super.key});
 
   @override
   State<SubscriptionView> createState() => _SubscriptionViewState();
@@ -54,7 +54,7 @@ class _SubscriptionViewState extends State<SubscriptionView> {
     const maxAttempts = 5;
     for (int i = 0; i < maxAttempts; i++) {
       await Future.delayed(const Duration(seconds: 2));
-      if (!mounted) return;
+      if (!context.mounted) return;
       context.read<SubscriptionBloc>().add(const GetSubscriptionStatusEvent());
     }
   }
@@ -90,8 +90,10 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                       ),
                     );
 
+                    if (!context.mounted) return;
                     _pollSubscriptionStatus(context);
                   } catch (e) {
+                    if (!context.mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text('Payment confirmation failed: $e')),
                     );
@@ -106,12 +108,14 @@ class _SubscriptionViewState extends State<SubscriptionView> {
               }
 
               if (state.isFailure && state.errorMessage != null) {
+                if (!context.mounted) return;
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text('Error: ${state.errorMessage}')),
                 );
               }
 
               if (state.subscriptionStatus == 'active') {
+                if (!context.mounted) return;
                 context.goNamed('subscriptionSuccessful');
               }
             },
@@ -205,6 +209,7 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                             );
                             paymentMethodId = paymentMethod.id;
                           } catch (e) {
+                            if (!context.mounted) return;
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text('Error creating PaymentMethod: $e')),
                             );
@@ -215,6 +220,7 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                           }
 
                           if (paymentMethodId != null) {
+                            if (!context.mounted) return;
                             final req = CreateSubscriptionRequest(paymentMethodId: paymentMethodId!);
                             context
                                 .read<SubscriptionBloc>()

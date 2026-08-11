@@ -1,10 +1,8 @@
 /* MR Mega Mart Admin Panel Network API Client */
 
 const API_CONFIG = {
-  // Configurable base URL (Development localhost default vs Cloud Staging)
-  baseUrl: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-    ? 'http://localhost:5001'
-    : (window.ADMIN_API_BASE_URL || 'https://mrmegamart-backend.onrender.com'),
+  // Configurable base URL (Cloud Production backend default)
+  baseUrl: window.ADMIN_API_BASE_URL || 'https://mrmegamart-backend.onrender.com',
   timeoutMs: 15000,
 };
 
@@ -68,6 +66,10 @@ class AdminApiClient {
 
   static put(endpoint, body) {
     return this.request(endpoint, { method: 'PUT', body: JSON.stringify(body) });
+  }
+
+  static delete(endpoint) {
+    return this.request(endpoint, { method: 'DELETE' });
   }
 }
 

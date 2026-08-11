@@ -13,7 +13,7 @@ class CategoriesApiService {
       );
       return CategoriesResponse.fromJson(response);
     } catch (e) {
-      print("error : ${e}");
+
       throw Exception('Failed to fetch categories: $e');
     }
   }
@@ -27,7 +27,7 @@ class CategoriesApiService {
       );
       return CategoriesResponse.fromJson(response);
     } catch (e) {
-      print("error : ${e}");
+
       throw Exception('Failed to fetch categories: $e');
     }
   }

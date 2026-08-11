@@ -93,7 +93,7 @@ const corsOptions = {
     if (allowed.includes('*') || allowed.includes(origin) || origin.endsWith('.vercel.app') || origin.includes('localhost')) {
       return callback(null, true)
     }
-    return callback(null, true)
+    return callback(new Error('CORS access denied: origin not allowed.'))
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],

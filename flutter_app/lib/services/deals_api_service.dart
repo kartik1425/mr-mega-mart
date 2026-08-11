@@ -13,7 +13,7 @@ class DealsApiService {
       );
       return DealsResponse.fromJson(response);
     } catch (e) {
-      print("error : ${e}");
+
       throw Exception('Failed to fetch deals: $e');
     }
   }

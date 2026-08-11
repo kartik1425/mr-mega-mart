@@ -7,8 +7,8 @@
   --text-primary: #f8fafc;
   --text-muted: #94a3b8;
   --border-color: #1e293b;
-  --primary-accent: #38bdf8;
-  --primary-gradient: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%);
+  --primary-accent: #2DBE55;
+  --primary-gradient: linear-gradient(135deg, #1A602B 0%, #2DBE55 100%);
   --success-color: #22c55e;
   --warning-color: #f59e0b;
   --danger-color: #ef4444;
@@ -101,6 +101,16 @@ h1, h2, h3, h4 {
   flex-direction: column;
   gap: 0.35rem;
   flex-grow: 1;
+  overflow-y: auto;
+}
+
+.nav-section-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.75rem 1rem 0.25rem 1rem;
 }
 
 .nav-link {

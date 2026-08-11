@@ -180,6 +180,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                       color: primaryLightColor,
                       isLoading: state.isLoading,
                       onClick: () {
+                        if (state.isLoading) return;
                         if (hasDefaultAddress) {
                           context.read<PaymentBloc>().add(PaymentIntentRequested());
                         } else {

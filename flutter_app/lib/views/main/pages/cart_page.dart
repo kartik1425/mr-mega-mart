@@ -224,7 +224,7 @@ class CartPageContent extends StatelessWidget {
         return CartItemCard(
           productImageUrl: item.imageURL ?? '',
           productTitle: item.title,
-          productPrice: '\$${item.price.toStringAsFixed(2)}',
+          productPrice: '₹${item.price.toStringAsFixed(2)}',
           quantity: item.quantity,
           onMinusClicked: () {
             if (!isMinusLoading && item.quantity > 0) {
@@ -235,6 +235,15 @@ class CartPageContent extends StatelessWidget {
           },
           onPlusClicked: () {
             if (!isPlusLoading) {
+              if (item.quantity >= item.stockCount && item.stockCount > 0) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text("Maximum available stock reached!"),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+                return;
+              }
               context.read<CartOperationBloc>().add(
                 AddItemEvent(
                   request: AddItemToCartRequest(

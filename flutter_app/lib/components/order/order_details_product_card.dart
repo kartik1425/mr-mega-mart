@@ -83,7 +83,7 @@ class OrderDetailsProductCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '\$${price.toStringAsFixed(2)} x $quantity',
+                      '₹${price.toStringAsFixed(2)} x $quantity',
                       style: const TextStyle(
                         fontSize: 14,
                         color: Colors.grey,

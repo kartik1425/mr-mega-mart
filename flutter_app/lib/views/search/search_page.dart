@@ -38,7 +38,7 @@ class _SearchPageState extends State<SearchPage> {
     trendingSearchBloc = TrendingSearchBloc();
 
     categoriesBloc.add(const CategoriesRequested(categoryId: null));
-    trendingSearchBloc.add(TrendingSearchesRequested());
+    trendingSearchBloc.add(const TrendingSearchesRequested());
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       searchFocusNode.requestFocus();

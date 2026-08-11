@@ -16,7 +16,7 @@ class CheckoutItemsList extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ...cart.items.map((item) => _buildCartItem(item)).toList(),
+        ...cart.items.map((item) => _buildCartItem(item)),
         _buildCargoFee(),
         _buildTotalAmount(),
       ],
@@ -48,7 +48,7 @@ class CheckoutItemsList extends StatelessWidget {
             ),
             const Spacer(),
             Text(
-              "\$${item.price.toStringAsFixed(2)}",
+              "₹${item.price.toStringAsFixed(2)}",
               style: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
@@ -85,7 +85,7 @@ class CheckoutItemsList extends StatelessWidget {
                 ),
               ),
               Text(
-                cargoFee == 0 ? "Free" : "\$${cargoFee.toStringAsFixed(2)}",
+                cargoFee == 0 ? "Free" : "₹${cargoFee.toStringAsFixed(2)}",
                 style: TextStyle(
                   fontWeight: cargoFee == 0 ? FontWeight.bold : FontWeight.normal,
                   color: cargoFee == 0 ? Colors.green : Colors.black,
@@ -119,7 +119,7 @@ class CheckoutItemsList extends StatelessWidget {
             ),
           ),
           Text(
-            "\$${totalAmount.toStringAsFixed(2)}",
+            "₹${totalAmount.toStringAsFixed(2)}",
             style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,

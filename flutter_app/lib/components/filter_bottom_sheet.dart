@@ -143,7 +143,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                   child: TextField(
                     controller: minPriceController,
                     keyboardType: TextInputType.number,
-                    decoration: _buildInputDecoration("Min", prefixText: "\$"),
+                    decoration: _buildInputDecoration("Min", prefixText: "₹"),
                   ),
                 ),
                 const Padding(
@@ -154,7 +154,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                   child: TextField(
                     controller: maxPriceController,
                     keyboardType: TextInputType.number,
-                    decoration: _buildInputDecoration("Max", prefixText: "\$"),
+                    decoration: _buildInputDecoration("Max", prefixText: "₹"),
                   ),
                 ),
               ],

@@ -1,5 +1,7 @@
 {
   "version": 2,
+  "name": "mr-mega-mart",
+  "cleanUrls": true,
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ]

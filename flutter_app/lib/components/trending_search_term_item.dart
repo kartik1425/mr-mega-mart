@@ -20,8 +20,8 @@ class TrendingSearchItem extends StatelessWidget {
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(12.0),
-          splashColor: Colors.grey.withOpacity(0.3),
-          highlightColor: Colors.grey.withOpacity(0.1),
+          splashColor: Colors.grey.withValues(alpha: 0.3),
+          highlightColor: Colors.grey.withValues(alpha: 0.1),
           child: Container(
             padding: const EdgeInsets.all(12.0),
             decoration: BoxDecoration(

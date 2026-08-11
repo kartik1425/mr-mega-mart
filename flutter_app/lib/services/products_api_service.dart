@@ -30,7 +30,7 @@ class ProductsApiService {
 
       return ProductsResponse.fromJson(response);
     } catch (e) {
-      print("Error : $e");
+
       throw Exception('Failed to fetch products: $e');
     }
   }
@@ -57,7 +57,7 @@ class ProductsApiService {
 
       return ProductsResponse.fromJson(response);
     } catch (e) {
-      print("Error : $e");
+
       throw Exception('Failed to fetch products: $e');
     }
   }
@@ -71,7 +71,7 @@ class ProductsApiService {
       );
       return SingleProductResponse.fromJson(response);
     } catch (e) {
-      print("error : ${e}");
+
       throw Exception('Failed to fetch product: $e');
     }
   }
@@ -86,7 +86,7 @@ class ProductsApiService {
       );
       return ProductsResponse.fromJson(response);
     } catch (e) {
-      print("error : ${e}");
+
       throw Exception('Failed to fetch liked products: $e');
     }
   }
@@ -101,7 +101,7 @@ class ProductsApiService {
       );
       return ProductsResponse.fromJson(response);
     } catch (e) {
-      print("error : ${e}");
+
       throw Exception('Failed to fetch best of products: $e');
     }
   }
@@ -116,7 +116,7 @@ class ProductsApiService {
       );
       return LikeResponse.fromJson(response);
     } catch (e) {
-      print("error : ${e}");
+
       throw Exception('Failed to like product: $e');
     }
   }
@@ -131,7 +131,7 @@ class ProductsApiService {
       );
       return LikeResponse.fromJson(response);
     } catch (e) {
-      print("error : ${e}");
+
       throw Exception('Failed to unlike product: $e');
     }
   }
@@ -145,7 +145,7 @@ class ProductsApiService {
       );
       return GetLikedProductsResponse.fromJson(response);
     } catch (e) {
-      print("error : ${e}");
+
       throw Exception('Failed to fetch liked products: $e');
     }
   }
@@ -158,7 +158,7 @@ class ProductsApiService {
       );
       return TrendingSearchResponse.fromJson(response);
     } catch (e) {
-      print("error : ${e}");
+
       throw Exception('Failed to fetch trending searches: $e');
     }
   }

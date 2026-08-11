@@ -434,16 +434,21 @@ exports.getBestOfProducts = async (req, res) => {
     let products = []
     if (!bestOfProduct || !bestOfProduct.productIds || bestOfProduct.productIds.length === 0) {
       products = await Product.find({})
+        .select('-tags -description')
         .sort({ averageRating: -1, createdAt: -1 })
         .limit(parseInt(limit))
+        .lean()
         .exec()
     } else {
       const productIds = bestOfProduct.productIds
-      products = await Product.find({ _id: { $in: productIds } }).exec()
+      products = await Product.find({ _id: { $in: productIds } })
+        .select('-tags -description')
+        .lean()
+        .exec()
     }
 
     const transformedProducts = products.map((product) => ({
-      ...product.toObject(),
+      ...product,
       tags: [],
       description: "",
     }))

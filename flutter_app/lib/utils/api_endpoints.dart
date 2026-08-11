@@ -1,5 +1,3 @@
-import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ApiEndpoints {
@@ -20,16 +18,7 @@ class ApiEndpoints {
     if (dotenv.env['BASE_BACKEND_URL'] != null && dotenv.env['BASE_BACKEND_URL']!.isNotEmpty) {
       return dotenv.env['BASE_BACKEND_URL']!;
     }
-
-    if (kIsWeb) {
-      return 'http://localhost:5001';
-    } else if (Platform.isAndroid) {
-      return 'http://10.0.2.2:5001';
-    } else if (Platform.isIOS) {
-      return 'http://localhost:5001';
-    } else {
-      return '';
-    }
+    return 'https://mrmegamart-backend.onrender.com';
   }
 
   // AUTH

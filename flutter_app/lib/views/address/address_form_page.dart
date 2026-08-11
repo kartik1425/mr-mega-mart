@@ -179,6 +179,7 @@ class _AddressFormPageState extends State<AddressFormPage> {
                     ),
                     const SizedBox(height: 12),
                     DropdownButtonFormField<String>(
+                      // ignore: deprecated_member_use - dynamically updated via setState
                       value: addressType,
                       dropdownColor: white,
                       decoration: InputDecoration(

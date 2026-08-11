@@ -12,7 +12,7 @@ class BottomBarWithCartButton extends StatelessWidget {
   final String buttonText;
 
   const BottomBarWithCartButton({
-    Key? key,
+    super.key,
     required this.price,
     this.salePrice,
     required this.cargoWeight,
@@ -20,7 +20,7 @@ class BottomBarWithCartButton extends StatelessWidget {
     this.isAddToCartActive = true,
     this.isLoading = false,
     this.buttonText = "Add to Cart",
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +60,7 @@ class BottomBarWithCartButton extends StatelessWidget {
                       children: [
                         // Sale Price
                         Text(
-                          "\$${salePrice!.toStringAsFixed(2)}",
+                          "₹${salePrice!.toStringAsFixed(2)}",
                           style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -69,7 +69,7 @@ class BottomBarWithCartButton extends StatelessWidget {
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          "\$${price.toStringAsFixed(2)}",
+                          "₹${price.toStringAsFixed(2)}",
                           style: const TextStyle(
                             fontSize: 14,
                             color: Colors.grey,
@@ -80,7 +80,7 @@ class BottomBarWithCartButton extends StatelessWidget {
                     )
                   else
                     Text(
-                      "\$${price.toStringAsFixed(2)}",
+                      "₹${price.toStringAsFixed(2)}",
                       style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,

@@ -18,7 +18,7 @@ class ReviewApiService {
       );
       return ReviewOperationResponse.fromJson(response);
     } catch (e) {
-      print("error : ${e}");
+
       throw Exception('Failed to create review: $e');
     }
   }
@@ -32,7 +32,7 @@ class ReviewApiService {
       );
       return ReviewOperationResponse.fromJson(response);
     } catch (e) {
-      print("error : ${e}");
+
       throw Exception('Failed to delete review: $e');
     }
   }
@@ -44,10 +44,10 @@ class ReviewApiService {
           urlParams: {"productId":productId},
           queryParams: {"page":page.toString()}
       );
-      print("response = ${response}");
+
       return GetReviewsResponse.fromJson(response);
     } catch (e) {
-      print("error : ${e}");
+
       throw Exception('Failed to get product reviews: $e');
     }
   }
@@ -62,7 +62,7 @@ class ReviewApiService {
       );
       return GetReviewableProductsResponse.fromJson(response);
     } catch (e) {
-      print("error : ${e}");
+
       throw Exception('Failed to get reviewable products: $e');
     }
   }

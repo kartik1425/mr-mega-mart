@@ -16,10 +16,10 @@ class SubscriptionApiService {
           addAuthToken: true,
           body: request.toJson()
       );
-      print("response = ${response}");
+
       return CreateSubscriptionResponse.fromJson(response);
     } catch (e) {
-      print("error : ${e}");
+
       throw Exception('Failed to create subscription: $e');
     }
   }
@@ -33,7 +33,7 @@ class SubscriptionApiService {
       );
       return GetSubscriptionStatusResponse.fromJson(response);
     } catch (e) {
-      print("error : ${e}");
+
       throw Exception('Failed to get subscription status: $e');
     }
   }
@@ -48,7 +48,7 @@ class SubscriptionApiService {
       );
       return CancelSubscriptionResponse.fromJson(response);
     } catch (e) {
-      print("error : ${e}");
+
       throw Exception('Failed to cancel subscription: $e');
     }
   }

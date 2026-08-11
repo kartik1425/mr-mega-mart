@@ -19,7 +19,7 @@ class CartApiService{
       );
       return GetCartResponse.fromJson(response);
     } catch (e) {
-      print("error : ${e}");
+
       throw Exception('Failed to get user cart: $e');
     }
   }
@@ -35,7 +35,7 @@ class CartApiService{
       return CartOperationResponse.fromJson(response);
     }
     catch (e) {
-      print("error : ${e}");
+
       throw Exception('Failed to add item to cart: $e');
     }
   }
@@ -52,7 +52,7 @@ class CartApiService{
       return CartOperationResponse.fromJson(response);
     }
     catch (e) {
-      print("error : ${e}");
+
       throw Exception('Failed to add item to cart: $e');
     }
   }
@@ -68,7 +68,7 @@ class CartApiService{
       return CartOperationResponse.fromJson(response);
     }
     catch (e) {
-      print("error : ${e}");
+
       throw Exception('Failed to add item to cart: $e');
     }
   }
@@ -84,7 +84,7 @@ class CartApiService{
       return AddItemToCartOnFeedResponse.fromJson(response);
     }
     catch (e) {
-      print("error : ${e}");
+
       throw Exception('Failed to add item to cart: $e');
     }
   }
@@ -99,7 +99,7 @@ class CartApiService{
       return GetCartItemsResponse.fromJson(response);
     }
     catch (e) {
-      print("error : ${e}");
+
       throw Exception('Failed to add get cart item ids: $e');
     }
   }

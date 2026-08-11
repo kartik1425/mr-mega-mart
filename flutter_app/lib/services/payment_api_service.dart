@@ -16,7 +16,7 @@ class PaymentApiService{
       return CreatePaymentIntentResponse.fromJson(response);
     }
     catch (e) {
-      print("error : ${e}");
+
       throw Exception('Failed to create payment intent: $e');
     }
   }

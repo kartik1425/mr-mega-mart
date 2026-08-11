@@ -9,6 +9,8 @@ import 'package:mrmegamart_app/views/orders/order_details_page.dart';
 import 'package:mrmegamart_app/views/product/product_description_page.dart';
 import 'package:mrmegamart_app/views/product/product_details_page.dart';
 import 'package:mrmegamart_app/views/profile/my_profile_page.dart';
+import 'package:mrmegamart_app/views/profile/about_page.dart';
+import 'package:mrmegamart_app/views/profile/privacy_policy_page.dart';
 import 'package:mrmegamart_app/views/review/product_reviews_page.dart';
 import 'package:mrmegamart_app/views/review/review_success_page.dart';
 import 'package:mrmegamart_app/views/review/reviewable_products_page.dart';
@@ -359,9 +361,16 @@ class AppRouter {
         path: '/myProfilePage',
         builder: (context, state) => const MyProfilePage()
       ),
-
-
-
+      GoRoute(
+        name: 'aboutPage',
+        path: '/aboutPage',
+        builder: (context, state) => const AboutPage(),
+      ),
+      GoRoute(
+        name: 'privacyPolicyPage',
+        path: '/privacyPolicyPage',
+        builder: (context, state) => const PrivacyPolicyPage(),
+      ),
     ],
   );
 }

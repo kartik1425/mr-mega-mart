@@ -24,7 +24,7 @@ class CartDetailsSection extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
+            color: Colors.grey.withValues(alpha: 0.2),
             blurRadius: 10,
             offset: const Offset(0, -4),
           ),
@@ -42,7 +42,7 @@ class CartDetailsSection extends StatelessWidget {
               ),
               const Spacer(),
               Text(
-                "\$${subTotalPrice.toStringAsFixed(2)}",
+                "₹${subTotalPrice.toStringAsFixed(2)}",
                 style: const TextStyle(color: Colors.black, fontSize: 14),
               ),
             ],
@@ -58,7 +58,7 @@ class CartDetailsSection extends StatelessWidget {
               ),
               const Spacer(),
               Text(
-                deliveryFee == 0 ? "Free" : "\$${deliveryFee.toStringAsFixed(2)}",
+                deliveryFee == 0 ? "Free" : "₹${deliveryFee.toStringAsFixed(2)}",
                 style: TextStyle(
                   fontWeight: deliveryFee == 0 ? FontWeight.bold : FontWeight.normal,
                   color: deliveryFee == 0 ? Colors.green : Colors.black,
@@ -82,7 +82,7 @@ class CartDetailsSection extends StatelessWidget {
               ),
               const Spacer(),
               Text(
-                "\$${totalAmount.toStringAsFixed(2)}",
+                "₹${totalAmount.toStringAsFixed(2)}",
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16,

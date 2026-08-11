@@ -103,6 +103,7 @@ flutter:
     - assets/images/trizyprobackgroundv2.png
     - assets/images/profileholder.png
     - assets/terms/trial_terms.md
+    - assets/legal/privacy_policy.md
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

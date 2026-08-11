@@ -20,7 +20,7 @@ class CustomTapWrapper extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         borderRadius: borderRadius,
-        splashColor: Colors.grey.withOpacity(0.2),
+        splashColor: Colors.grey.withValues(alpha: 0.2),
         child: child,
       ),
     );

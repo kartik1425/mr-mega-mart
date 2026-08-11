@@ -30,7 +30,7 @@ class ReviewRepository {
 
   Future<GetReviewsResponse> getProductReviews({required String productId, required int page}) async {
     try {
-      print("running get product reviews with product id = ${productId} and page ${page}");
+
       final GetReviewsResponse response = await reviewApiService.getProductReviews(productId: productId, page: page);
       return response;
     } catch (e) {

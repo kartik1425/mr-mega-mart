@@ -121,23 +121,22 @@ class _AvailableTrialsSectionState extends State<AvailableTrialsSection> {
                         onTrialNowClicked: () async {
                           if(await isSubscribed()){
                             if(!await checkHasActiveTrial()){
-                              if(mounted){
-                                context.pushNamed(
-                                  'trialProductDetailsPage',
-                                  pathParameters: {'productId': trialProduct.id},
-                                );
-                              }
+                              if (!context.mounted) return;
+                              context.pushNamed(
+                                'trialProductDetailsPage',
+                                pathParameters: {'productId': trialProduct.id},
+                              );
                             }
                             else{
+                              if (!context.mounted) return;
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(content: Text("You already have an active trial!")),
                               );
                             }
                           }
                           else{
-                            if(mounted){
-                              context.pushNamed("subscriptionPromotionPage");
-                            }
+                            if (!context.mounted) return;
+                            context.pushNamed("subscriptionPromotionPage");
                           }
                         },
                       );
