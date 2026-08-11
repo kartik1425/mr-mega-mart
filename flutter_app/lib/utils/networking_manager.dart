@@ -95,6 +95,8 @@ class NetworkingManager {
       return _processResponse(response);
     } on SocketException {
       throw Exception("No internet connection");
+    } on UnauthorizedException {
+      rethrow;
     } catch (e) {
       throw Exception("Unexpected error: $e");
     }
@@ -118,6 +120,8 @@ class NetworkingManager {
       return _processResponse(response);
     } on SocketException {
       throw Exception("No internet connection");
+    } on UnauthorizedException {
+      rethrow;
     } catch (e) {
       throw Exception("Unexpected error: $e");
     }
@@ -142,6 +146,8 @@ class NetworkingManager {
       return _processResponse(response);
     } on SocketException {
       throw Exception("No internet connection");
+    } on UnauthorizedException {
+      rethrow;
     } catch (e) {
       throw Exception("Unexpected error: $e");
     }
@@ -165,6 +171,8 @@ class NetworkingManager {
       return _processResponse(response);
     } on SocketException {
       throw Exception("No internet connection");
+    } on UnauthorizedException {
+      rethrow;
     } catch (e) {
       throw Exception("Unexpected error: $e");
     }
@@ -189,6 +197,8 @@ class NetworkingManager {
       return _processResponse(response);
     } on SocketException {
       throw Exception("No internet connection");
+    } on UnauthorizedException {
+      rethrow;
     } catch (e) {
       throw Exception("Unexpected error: $e");
     }
@@ -210,34 +220,41 @@ class NetworkingManager {
       }
       attempt++;
     }
-    throw Exception("Authentication failed after $maxRetryAttempts attempts.");
+    throw UnauthorizedException("Authentication session expired. Please sign in again.");
   }
 
   Future<bool> _refreshAccessToken() async {
     final prefs = await SharedPreferences.getInstance();
     final refreshToken = prefs.getString('refreshToken');
 
-    if (refreshToken == null) return false;
+    if (refreshToken == null || refreshToken.isEmpty) return false;
 
-    final refreshUrl = Uri.parse('$baseUrl/refreshAccessToken');
-    final response = await http.post(
-      refreshUrl,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'refreshToken': refreshToken}),
-    );
+    final String cleanBaseUrl = baseUrl.endsWith('/') ? baseUrl.substring(0, baseUrl.length - 1) : baseUrl;
+    final refreshUrl = Uri.parse('$cleanBaseUrl/api/refresh');
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      final newAccessToken = data['accessToken'];
-      final newRefreshToken = data['refreshToken'];
+    try {
+      final response = await http.post(
+        refreshUrl,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'token': refreshToken,
+          'refreshToken': refreshToken,
+        }),
+      );
 
-      await prefs.setString('accessToken', newAccessToken);
-      await prefs.setString('refreshToken', newRefreshToken);
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final newAccessToken = data['accessToken'];
+        final newRefreshToken = data['refreshToken'] ?? refreshToken;
 
-      return true;
-    } else {
-      return false;
-    }
+        if (newAccessToken != null && newAccessToken is String) {
+          await prefs.setString('accessToken', newAccessToken);
+          await prefs.setString('refreshToken', newRefreshToken);
+          return true;
+        }
+      }
+    } catch (_) {}
+    return false;
   }
 
   Uri _constructUrl(String endpoint, Map<String, String>? urlParams, [Map<String, String>? queryParams]) {

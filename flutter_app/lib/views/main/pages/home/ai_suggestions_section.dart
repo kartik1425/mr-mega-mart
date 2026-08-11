@@ -116,12 +116,34 @@ class _AiSuggestionsSectionState extends State<AiSuggestionsSection> {
               );
             } else if (state.isFailure) {
               return Center(
-                child: Text(
-                  state.errorMessage != null && state.errorMessage!.contains("429")
-                      ? "Too many people are using the AI Suggestions Right Now. Please Try Again Later!"
-                      : "AI Suggestion Feature is disabled. You can compile the app and use your own Gemini API key in the backend's .env",
-                  style: const TextStyle(color: Colors.red),
-                  textAlign: TextAlign.center,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.smart_toy_outlined, size: 48, color: Colors.grey.shade400),
+                      const SizedBox(height: 12),
+                      Text(
+                        state.errorMessage != null && state.errorMessage!.contains("429")
+                            ? "AI Recommendations are busy right now. Please try again in a moment!"
+                            : "Personalized suggestions are updating. Tap to refresh!",
+                        style: TextStyle(color: Colors.grey.shade700, fontSize: 13),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 12),
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          _aiSuggestionsBloc.add(const AiSuggestionsRequested());
+                        },
+                        icon: const Icon(Icons.refresh, size: 16),
+                        label: const Text('Refresh Suggestions'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF1A602B),
+                          foregroundColor: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               );
             } else if (state.isSuccess && state.productsResponse?.products.isNotEmpty == true) {
