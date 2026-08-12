@@ -582,8 +582,8 @@ exports.getAdminOrders = async (req, res) => {
     const [orders, total] = await Promise.all([
       Order.find(query)
         .populate('userId', 'userFirstName userLastName email')
-        .populate('deliveryAddress', 'fullName phoneNumber address city state postalCode country')
-        .populate('items.productId', 'title imageURLs price')
+        .populate('deliveryAddress', 'fullName phoneNumber address city state postalCode country addressType isDefault')
+        .populate('items.productId', 'title imageURLs price salePrice cargoWeight category')
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
@@ -608,6 +608,36 @@ exports.getAdminOrders = async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Failed to fetch admin order list',
+      error: error.message,
+    })
+  }
+}
+
+exports.getAdminOrderById = async (req, res) => {
+  try {
+    const { orderId } = req.params
+    const order = await Order.findById(orderId)
+      .populate('userId', 'userFirstName userLastName email')
+      .populate('deliveryAddress', 'fullName phoneNumber address city state postalCode country addressType isDefault')
+      .populate('items.productId', 'title imageURLs price salePrice cargoWeight category')
+      .lean()
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: 'Order not found',
+      })
+    }
+
+    res.status(200).json({
+      success: true,
+      order,
+    })
+  } catch (error) {
+    logger.error({ event: 'admin_order_details_error', error: error.message, orderId: req.params.orderId }, 'Error fetching admin order details')
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch order details',
       error: error.message,
     })
   }

@@ -71,6 +71,13 @@ router.delete(
 
 // Orders State Machine
 router.get('/orders', verifyAdmin, adminController.getAdminOrders)
+router.get(
+  '/orders/:orderId',
+  verifyAdmin,
+  validateObjectId('orderId'),
+  validate,
+  adminController.getAdminOrderById
+)
 router.put(
   '/orders/:orderId/status',
   verifyAdmin,
