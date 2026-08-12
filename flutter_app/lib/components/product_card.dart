@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mrmegamart_app/models/product/product_model.dart';
 import 'package:mrmegamart_app/theme/colors.dart';
 import 'package:mrmegamart_app/theme/text_styles.dart';
@@ -245,7 +244,7 @@ class ProductCard extends StatelessWidget {
                                     constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
                                     padding: EdgeInsets.zero,
                                     icon: const Icon(Icons.remove, size: 16, color: Colors.white),
-                                    onPressed: onDecrement ?? () => context.pushNamed('cart'),
+                                    onPressed: onDecrement ?? () {},
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.symmetric(horizontal: 4.0),
@@ -259,7 +258,7 @@ class ProductCard extends StatelessWidget {
                                     constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
                                     padding: EdgeInsets.zero,
                                     icon: const Icon(Icons.add, size: 16, color: Colors.white),
-                                    onPressed: onIncrement ?? () => context.pushNamed('cart'),
+                                    onPressed: onIncrement ?? () {},
                                   ),
                                 ],
                               ),

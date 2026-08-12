@@ -11,6 +11,8 @@ router.get('/get-order-details/:orderId', verifyToken, validateObjectId('orderId
 
 router.get('/get-latest-order-details', verifyToken, orderController.getLatestOrderDetails)
 
+router.post('/create-cod-order', verifyToken, orderController.createCodOrder)
+
 router.put('/cancel-order/:orderId', verifyToken, validateObjectId('orderId'), validate, orderController.cancelOrder)
 
 module.exports = router

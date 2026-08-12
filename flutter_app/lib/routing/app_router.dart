@@ -104,13 +104,12 @@ class AppRouter {
       ),
       GoRoute(
         name: 'productDescriptionPage',
-        path: '/productDescriptionPage/:title/:description',
+        path: '/productDescriptionPage',
         builder: (context, state) {
-          final title = state.pathParameters['title'];
-          final description = state.pathParameters['description'];
+          final extra = state.extra as Map<String, dynamic>;
           return ProductDescriptionPage(
-            title: title!,
-            description: description!,
+            title: extra['title'] as String,
+            description: extra['description'] as String,
           );
         },
       ),

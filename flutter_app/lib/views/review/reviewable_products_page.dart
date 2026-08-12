@@ -85,7 +85,7 @@ class _ReviewableProductsPageState extends State<ReviewableProductsPage> {
                         pathParameters: {
                           'productId': product.id,
                           'productTitle': Uri.encodeComponent(product.title),
-                          'productImageUrl': Uri.encodeComponent(product.imageURLs[0]),
+                          'productImageUrl': Uri.encodeComponent(product.imageURLs.isNotEmpty ? product.imageURLs[0] : ''),
                           'orderId': widget.orderId,
                         },
                       );

@@ -17,6 +17,7 @@ import '../../components/checkout/checkout_address_section.dart';
 import '../../components/checkout/checkout_delivery_date_section.dart';
 import '../../components/checkout/checkout_order_summary_section.dart';
 import '../../components/buttons/custom_button.dart';
+import 'package:mrmegamart_app/services/orders_api_service.dart';
 
 class CheckoutPage extends StatefulWidget {
   const CheckoutPage({super.key});
@@ -30,6 +31,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
   late GetCartBloc _cartBloc;
   late PaymentBloc _paymentBloc;
   String _paymentMethod = 'COD'; // Default to Cash on Delivery
+  bool _isProcessingCod = false;
 
   @override
   void initState() {
@@ -236,14 +238,14 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     color: Colors.white,
                     padding: const EdgeInsets.only(left: 16, right: 16, bottom: 20, top: 10),
                     child: CustomButton(
-                      text: state.isLoading
-                          ? "Processing..."
+                      text: (_isProcessingCod || state.isLoading)
+                          ? "Placing Order..."
                           : (_paymentMethod == 'COD' ? "Place Order (Cash on Delivery)" : "Pay Now (Online)"),
                       textColor: Colors.white,
                       color: AppColors.primary,
-                      isLoading: state.isLoading,
+                      isLoading: _isProcessingCod || state.isLoading,
                       onClick: () {
-                        if (state.isLoading) return;
+                        if (_isProcessingCod || state.isLoading) return;
                         if (!hasDefaultAddress) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
@@ -255,13 +257,30 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         }
 
                         if (_paymentMethod == 'COD') {
-                          final codPaymentId = 'COD-${DateTime.now().millisecondsSinceEpoch}';
-                          context.goNamed(
-                            'paymentSuccessful',
-                            pathParameters: {
-                              'paymentIntentId': codPaymentId,
-                            },
-                          );
+                          setState(() { _isProcessingCod = true; });
+                          OrdersApiService().createCodOrder().then((res) {
+                            if (!mounted) return;
+                            setState(() { _isProcessingCod = false; });
+                            final order = res['order'];
+                            final paymentId = order != null && order['paymentId'] != null
+                                ? order['paymentId'].toString()
+                                : 'COD-${DateTime.now().millisecondsSinceEpoch}';
+                            context.goNamed(
+                              'paymentSuccessful',
+                              pathParameters: {
+                                'paymentIntentId': paymentId,
+                              },
+                            );
+                          }).catchError((err) {
+                            if (!mounted) return;
+                            setState(() { _isProcessingCod = false; });
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text("Failed to place COD order: ${err.toString().replaceAll('Exception: ', '')}"),
+                                backgroundColor: AppColors.error,
+                              ),
+                            );
+                          });
                         } else {
                           context.read<PaymentBloc>().add(PaymentIntentRequested());
                         }

@@ -23,7 +23,7 @@ class Review {
     return Review(
       id: json['_id'],
       productId: json['productId'],
-      user: ReviewUser.fromJson(json['userId']),
+      user: json['userId'] != null ? ReviewUser.fromJson(json['userId']) : ReviewUser(id: '', firstName: 'Unknown', lastName: 'User'),
       orderId: json['orderId'],
       rating: (json['rating'] as num).toDouble(),
       comment: json['comment'],

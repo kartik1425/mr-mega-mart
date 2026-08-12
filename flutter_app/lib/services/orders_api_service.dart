@@ -68,4 +68,17 @@ class OrdersApiService{
     }
   }
 
+  Future<Map<String, dynamic>> createCodOrder() async {
+    try {
+      final response = await _networkingManager.post(
+        endpoint: ApiEndpoints.createCodOrder,
+        addAuthToken: true,
+        body: {},
+      );
+      return response;
+    } catch (e) {
+      throw Exception('Failed to create COD order: $e');
+    }
+  }
+
 }

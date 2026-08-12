@@ -8,6 +8,7 @@ import 'package:mrmegamart_app/bloc/cart/operations/feed/add_cart_item_on_feed_b
 import 'package:mrmegamart_app/bloc/cart/operations/feed/add_cart_item_on_feed_event.dart';
 import 'package:mrmegamart_app/bloc/cart/operations/feed/add_cart_item_on_feed_state.dart';
 import 'package:mrmegamart_app/components/product_card.dart';
+import 'package:mrmegamart_app/services/categories_api_service.dart';
 import 'package:mrmegamart_app/theme/colors.dart';
 import 'package:mrmegamart_app/theme/text_styles.dart';
 
@@ -24,15 +25,11 @@ class _HomePageState extends State<HomePage> {
   late AddCartItemOnFeedBloc _addCartItemOnFeedBloc;
   String? _loadingProductId;
 
-  final List<Map<String, dynamic>> _categories = [
+  // Dynamic categories fetched from API
+  List<Map<String, dynamic>> _categories = [
     {'id': 'all', 'name': 'ALL', 'icon': Icons.grid_view_rounded},
-    {'id': 'bakery', 'name': 'Bakery & Breads', 'icon': Icons.bakery_dining_outlined},
-    {'id': 'snacks', 'name': 'Snacks & Biscuits', 'icon': Icons.cookie_outlined},
-    {'id': 'staples', 'name': 'Staples & Grains', 'icon': Icons.rice_bowl_outlined},
-    {'id': 'beverages', 'name': 'Beverages & Drinks', 'icon': Icons.local_drink_outlined},
-    {'id': 'dairy', 'name': 'Dairy & Eggs', 'icon': Icons.water_drop_outlined},
-    {'id': 'household', 'name': 'Household Care', 'icon': Icons.cleaning_services_outlined},
   ];
+  bool _categoriesLoading = true;
 
   @override
   void initState() {
@@ -42,6 +39,68 @@ class _HomePageState extends State<HomePage> {
       ..add(FetchLikedProductsFromLocal())
       ..add(FetchCartItemsFromLocal());
     _addCartItemOnFeedBloc = AddCartItemOnFeedBloc();
+    _fetchCategories();
+  }
+
+  Future<void> _fetchCategories() async {
+    try {
+      final categoriesService = CategoriesApiService();
+      final response = await categoriesService.getRootCategories();
+      if (response.success && response.categories.isNotEmpty) {
+        final List<Map<String, dynamic>> apiCategories = [
+          {'id': 'all', 'name': 'ALL', 'icon': Icons.grid_view_rounded},
+        ];
+
+        // Map category names to icons
+        const categoryIcons = {
+          'bakery': Icons.bakery_dining_outlined,
+          'bread': Icons.bakery_dining_outlined,
+          'snack': Icons.cookie_outlined,
+          'biscuit': Icons.cookie_outlined,
+          'staple': Icons.rice_bowl_outlined,
+          'grain': Icons.rice_bowl_outlined,
+          'beverage': Icons.local_drink_outlined,
+          'drink': Icons.local_drink_outlined,
+          'dairy': Icons.water_drop_outlined,
+          'egg': Icons.egg_outlined,
+          'household': Icons.cleaning_services_outlined,
+          'clean': Icons.cleaning_services_outlined,
+          'fruit': Icons.apple,
+          'vegetable': Icons.eco_outlined,
+          'meat': Icons.set_meal_outlined,
+          'frozen': Icons.ac_unit_outlined,
+          'personal': Icons.face_outlined,
+          'baby': Icons.child_care_outlined,
+        };
+
+        for (final cat in response.categories) {
+          IconData icon = Icons.category_outlined;
+          final nameLower = cat.name.toLowerCase();
+          for (final entry in categoryIcons.entries) {
+            if (nameLower.contains(entry.key)) {
+              icon = entry.value;
+              break;
+            }
+          }
+          apiCategories.add({
+            'id': cat.id, // Real MongoDB ObjectId
+            'name': cat.name,
+            'icon': icon,
+          });
+        }
+
+        if (mounted) {
+          setState(() {
+            _categories = apiCategories;
+            _categoriesLoading = false;
+          });
+        }
+      } else {
+        if (mounted) setState(() => _categoriesLoading = false);
+      }
+    } catch (_) {
+      if (mounted) setState(() => _categoriesLoading = false);
+    }
   }
 
   @override

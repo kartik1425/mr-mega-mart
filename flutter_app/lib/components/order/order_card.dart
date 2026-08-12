@@ -30,7 +30,7 @@ class OrderCard extends StatelessWidget {
     final productTitles = order.items.map((item) => item.title).join(', ');
 
     final deliveryAddress = order.deliveryAddress;
-    final cityPlusPostal = '${deliveryAddress.city}, 12345'; // TODO: GET REAL POSTAL CODE, INCLUDE IT IN THE DELIVERY ADDRESS RESPONSE
+    final cityPlusPostal = deliveryAddress != null ? '${deliveryAddress.city}, ${deliveryAddress.state}' : 'Standard Delivery';
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),

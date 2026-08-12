@@ -1,6 +1,5 @@
 import 'dart:io';
 
-//import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
@@ -12,7 +11,6 @@ import 'package:mrmegamart_app/theme/colors.dart';
 import 'package:mrmegamart_app/theme/text_styles.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:mrmegamart_app/utils/auth_check.dart';
-//import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -51,7 +49,7 @@ void main() async {
     debugPrint("[Init] Error during initializeApp: $e");
   }
 
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 Future<void> initializeApp() async {
@@ -84,13 +82,18 @@ bool setupStripeKey() {
   return true;
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final AppRouter appRouter = AppRouter();
+  State<MyApp> createState() => _MyAppState();
+}
 
+class _MyAppState extends State<MyApp> {
+  final AppRouter _appRouter = AppRouter();
+
+  @override
+  Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'MR Mega Mart',
       debugShowCheckedModeBanner: false,
@@ -189,9 +192,9 @@ class MyApp extends StatelessWidget {
           elevation: 8.0,
         ),
       ),
-      routerDelegate: appRouter.router.routerDelegate,
-      routeInformationParser: appRouter.router.routeInformationParser,
-      routeInformationProvider: appRouter.router.routeInformationProvider,
+      routerDelegate: _appRouter.router.routerDelegate,
+      routeInformationParser: _appRouter.router.routeInformationParser,
+      routeInformationProvider: _appRouter.router.routeInformationProvider,
     );
   }
 }

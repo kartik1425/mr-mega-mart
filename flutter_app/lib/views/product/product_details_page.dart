@@ -138,7 +138,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                 ),
                               ),
                             );
-                            context.pushNamed('checkout');
+                            context.pushNamed('checkoutPage');
                           },
                           isAddToCartActive: product.stockCount > 0,
                           isLoading: isLoading,
@@ -315,7 +315,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                             onSeeMoreClicked: () {
                               context.pushNamed(
                                   "productDescriptionPage",
-                                pathParameters: {
+                                extra: {
                                     "description":product.description,
                                     "title":product.title
                                 }

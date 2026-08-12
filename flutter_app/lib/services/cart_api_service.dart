@@ -53,7 +53,7 @@ class CartApiService{
     }
     catch (e) {
 
-      throw Exception('Failed to add item to cart: $e');
+      throw Exception('Failed to remove item from cart: $e');
     }
   }
 
@@ -69,7 +69,7 @@ class CartApiService{
     }
     catch (e) {
 
-      throw Exception('Failed to add item to cart: $e');
+      throw Exception('Failed to update cart quantity: $e');
     }
   }
 
@@ -100,7 +100,7 @@ class CartApiService{
     }
     catch (e) {
 
-      throw Exception('Failed to add get cart item ids: $e');
+      throw Exception('Failed to get cart item ids: $e');
     }
   }
 

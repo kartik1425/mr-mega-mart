@@ -41,7 +41,7 @@ const UserAddressSchema = new mongoose.Schema(
     country: {
       type: String,
       required: true,
-      default: 'USA',
+      default: 'India',
       trim: true,
     },
     addressType: {

@@ -231,6 +231,10 @@ exports.searchProducts = async (req, res) => {
     if (sortBy === "ratingCountDesc") sortOptions.reviewCount = -1
     if (sortBy === "likeCountDesc") sortOptions.likeCount = -1
 
+    if (Object.keys(sortOptions).length === 0) {
+      sortOptions.createdAt = -1
+    }
+
     const skip = (page - 1) * limit
 
     const [products, totalProducts] = await Promise.all([
@@ -454,7 +458,7 @@ exports.getBestOfProducts = async (req, res) => {
       products: transformedProducts,
       pagination: {
         currentPage: parseInt(page),
-        totalPages: Math.ceil(products.length / limit),
+        totalPages: 1,
         totalProducts: products.length,
       },
     })

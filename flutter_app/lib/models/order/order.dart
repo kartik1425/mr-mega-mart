@@ -1,7 +1,7 @@
 class OrderData {
   final String id;
   final String userId;
-  final DeliveryAddress deliveryAddress;
+  final DeliveryAddress? deliveryAddress;
   final String paymentIntentId;
   final double amount;
   final String currency;
@@ -12,7 +12,7 @@ class OrderData {
   OrderData({
     required this.id,
     required this.userId,
-    required this.deliveryAddress,
+    this.deliveryAddress,
     required this.paymentIntentId,
     required this.amount,
     required this.currency,
@@ -25,7 +25,7 @@ class OrderData {
     return OrderData(
       id: json['_id'],
       userId: json['userId'],
-      deliveryAddress: DeliveryAddress.fromJson(json['deliveryAddress']),
+      deliveryAddress: json['deliveryAddress'] != null ? DeliveryAddress.fromJson(json['deliveryAddress']) : null,
       paymentIntentId: json['paymentIntentId'],
       amount: (json['amount'] as num).toDouble(),
       currency: json['currency'],
@@ -41,7 +41,7 @@ class OrderData {
     return {
       '_id': id,
       'userId': userId,
-      'deliveryAddress': deliveryAddress.toJson(),
+      'deliveryAddress': deliveryAddress?.toJson(),
       'paymentIntentId': paymentIntentId,
       'amount': amount,
       'currency': currency,
@@ -108,11 +108,11 @@ class OrderItem {
   factory OrderItem.fromJson(Map<String, dynamic> json) {
     return OrderItem(
       id: json['_id'],
-      productId: json['productId']['_id'],
-      imageURLs: List<String>.from(json['productId']['imageURLs']),
-      title: json['productId']['title'],
+      productId: json['productId'] != null ? json['productId']['_id'] ?? '' : '',
+      imageURLs: json['productId'] != null && json['productId']['imageURLs'] != null ? List<String>.from(json['productId']['imageURLs']) : [],
+      title: json['productId'] != null ? json['productId']['title'] ?? 'Product unavailable' : 'Product unavailable',
       quantity: json['quantity'],
-      price: (json['price'] as num).toDouble(),
+      price: json['productId'] != null ? (json['productId']['price'] ?? json['price'] ?? 0).toDouble() : (json['price'] ?? 0).toDouble(),
     );
   }
 

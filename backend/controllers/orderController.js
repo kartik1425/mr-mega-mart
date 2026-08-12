@@ -1,6 +1,77 @@
 const Order = require('../models/Order')
 const Product = require('../models/Product')
+const Cart = require('../models/Cart')
+const UserAddress = require('../models/UserAddress')
 const { logger } = require('../services/logger')
+
+exports.createCodOrder = async (req, res) => {
+  try {
+    const userId = req.user.id
+
+    const cart = await Cart.findOne({ ownerId: userId })
+    if (!cart || !cart.items || cart.items.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Cart is empty.',
+      })
+    }
+
+    const defaultAddress = await UserAddress.findOne({ userId, isDefault: true })
+    if (!defaultAddress) {
+      return res.status(400).json({
+        success: false,
+        message: 'No default address found.',
+      })
+    }
+
+    let amount = 0
+    const items = []
+    
+    for (const item of cart.items) {
+      const product = await Product.findById(item.productId)
+      if (product) {
+        const itemPrice = product.price || 0
+        items.push({
+          productId: item.productId,
+          quantity: item.quantity,
+          price: itemPrice
+        })
+        amount += (itemPrice * item.quantity)
+      }
+    }
+
+    const paymentId = 'COD-' + Date.now()
+    const order = new Order({
+      userId,
+      items,
+      amount,
+      currency: 'INR',
+      paymentMethod: 'COD',
+      paymentId,
+      paymentIntentId: paymentId,
+      deliveryAddress: defaultAddress._id,
+      status: 'pending'
+    })
+
+    await order.save()
+    
+    // Clear cart
+    cart.items = []
+    await cart.save()
+
+    res.status(201).json({
+      success: true,
+      order,
+      message: 'COD order placed successfully'
+    })
+  } catch (error) {
+    logger.error({ event: 'create_cod_order_error', requestId: req.id, error: error.message }, 'Error creating COD order')
+    res.status(500).json({
+      success: false,
+      message: 'Failed to create COD order.',
+    })
+  }
+}
 
 // Valid Order State Machine Transition Matrix
 const ALLOWED_TRANSITIONS = {
@@ -178,6 +249,8 @@ exports.getOrderDetails = async (req, res) => {
       amount: order.amount,
       currency: order.currency,
       status: order.status,
+      paymentMethod: order.paymentMethod || 'CARD',
+      paymentId: order.paymentId || null,
       createdAt: order.createdAt,
       deliveryAddress: order.deliveryAddress ? order.deliveryAddress : null,
       items: order.items.map((item) => ({

@@ -88,7 +88,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
 
               final productTotal = order.items
                   .map((item) => item.price * item.quantity)
-                  .reduce((value, element) => value + element);
+                  .fold(0.0, (double a, double b) => a + b);
               final cargoFee = order.amount - productTotal;
 
               return Padding(
@@ -159,15 +159,18 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                       ),
                       const SizedBox(height: 16),
                       ...order.items.map((item) {
+                        final String pId = item.productId ?? '';
                         return OrderDetailsProductCard(
-                          productId: item.productId,
+                          productId: pId,
                           productTitle: item.productTitle,
-                          productImageUrl: item.productImage,
+                          productImageUrl: item.productImage ?? '',
                           price: item.price,
                           quantity: item.quantity,
                           onCardClick: () {
-                            context.pushNamed("productDetailsPage",
-                                pathParameters: {"productId": item.productId});
+                            if (pId.isNotEmpty) {
+                              context.pushNamed("productDetailsPage",
+                                  pathParameters: {"productId": pId});
+                            }
                           },
                         );
                       }),
@@ -243,10 +246,10 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
-                          "${order.deliveryAddress.fullName}\n"
-                              "${order.deliveryAddress.address}, ${order.deliveryAddress.city}, ${order.deliveryAddress.state}, ${order.deliveryAddress.country}\n"
-                              "Postal Code: ${order.deliveryAddress.postalCode}\n"
-                              "Phone: ${order.deliveryAddress.phoneNumber}",
+                          "${order.deliveryAddress?.fullName ?? 'Unknown'}\n"
+                              "${order.deliveryAddress?.address ?? ''}, ${order.deliveryAddress?.city ?? ''}, ${order.deliveryAddress?.state ?? ''}, ${order.deliveryAddress?.country ?? ''}\n"
+                              "Postal Code: ${order.deliveryAddress?.postalCode ?? ''}\n"
+                              "Phone: ${order.deliveryAddress?.phoneNumber ?? ''}",
                           style:
                           const TextStyle(fontSize: 14),
                         ),

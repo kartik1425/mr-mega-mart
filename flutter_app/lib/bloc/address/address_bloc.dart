@@ -165,8 +165,8 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
       emit(state.copyWith(
         isSuccess: false,
         isLoading: false,
-        isFailure: false,
-        errorMessage: null,
+        isFailure: true,
+        errorMessage: error.toString(),
         operationType: null,
         message: null,
         addresses: null,

@@ -25,7 +25,7 @@ class OrderDetails {
   final String currency;
   final String status;
   final DateTime createdAt;
-  final DeliveryAddressDetails deliveryAddress;
+  final DeliveryAddressDetails? deliveryAddress;
   final List<OrderItemDetails> items;
 
   OrderDetails({
@@ -34,7 +34,7 @@ class OrderDetails {
     required this.currency,
     required this.status,
     required this.createdAt,
-    required this.deliveryAddress,
+    this.deliveryAddress,
     required this.items,
   });
 
@@ -45,7 +45,7 @@ class OrderDetails {
       currency: json['currency'],
       status: json['status'],
       createdAt: DateTime.parse(json['createdAt']),
-      deliveryAddress: DeliveryAddressDetails.fromJson(json['deliveryAddress']),
+      deliveryAddress: json['deliveryAddress'] != null ? DeliveryAddressDetails.fromJson(json['deliveryAddress']) : null,
       items: (json['items'] as List)
           .map((item) => OrderItemDetails.fromJson(item))
           .toList(),
@@ -59,7 +59,7 @@ class OrderDetails {
       'currency': currency,
       'status': status,
       'createdAt': createdAt.toIso8601String(),
-      'deliveryAddress': deliveryAddress.toJson(),
+      'deliveryAddress': deliveryAddress?.toJson(),
       'items': items.map((item) => item.toJson()).toList(),
     };
   }
@@ -116,14 +116,14 @@ class DeliveryAddressDetails {
 class OrderItemDetails {
   final String productId;
   final String productTitle;
-  final String productImage;
+  final String? productImage;
   final int quantity;
   final double price;
 
   OrderItemDetails({
     required this.productId,
     required this.productTitle,
-    required this.productImage,
+    this.productImage,
     required this.quantity,
     required this.price,
   });

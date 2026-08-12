@@ -13,6 +13,13 @@ const OrderSchema = new mongoose.Schema(
       ref: 'UserAddress',
       required: true,
     },
+    paymentMethod: {
+      type: String,
+      default: 'CARD',
+    },
+    paymentId: {
+      type: String,
+    },
     paymentIntentId: {
       type: String,
       required: true,
