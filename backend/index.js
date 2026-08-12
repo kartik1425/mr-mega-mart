@@ -11,6 +11,7 @@ const mongoSanitize = require('express-mongo-sanitize')
 const hpp = require('hpp')
 
 const { logger } = require('./services/logger')
+const { seedAdminUser } = require('./services/seedAdmin')
 const { createRedisClient, getRedisClient } = require('./services/redisClient')
 const paymentService = require('./services/payment')
 const requestCorrelation = require('./middleware/requestCorrelation')
@@ -50,6 +51,7 @@ async function initDatabase() {
     try {
       await mongoose.connect(env.MONGODB_URI, { serverSelectionTimeoutMS: timeoutMs, family: 4 })
       logger.info({ event: 'mongodb_connected', attempt }, '[MongoDB] Connected successfully to primary database')
+      await seedAdminUser()
       return
     } catch (err) {
       logger.warn({ event: 'mongodb_primary_failed', attempt, error: err.message }, `[MongoDB] Primary connection attempt ${attempt}/${maxRetries} failed (${err.message}).`)
