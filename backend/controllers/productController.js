@@ -175,19 +175,12 @@ exports.searchProducts = async (req, res) => {
       sortBy,
     } = req.query
 
-    if (!query || query.trim() === "") {
-      return res.status(400).json({
-        success: false,
-        message: "Search query is required.",
-      })
-    }
-
-    if (req.user) {
+    if (req.user && query && query.trim() !== "") {
       (async () => {
         try {
           await SearchTerm.create({
             userId: req.user.id,
-            searchTerm: query,
+            searchTerm: query.trim(),
           })
         } catch (err) {
           console.error("Failed to log search term:", err.message)
@@ -195,12 +188,14 @@ exports.searchProducts = async (req, res) => {
       })()
     }
 
-    const searchFilter = {
-      $text: { $search: query },
+    const searchFilter = {}
+
+    if (query && query.trim() !== "") {
+      searchFilter.$text = { $search: query.trim() }
     }
 
-    if (categoryId) {
-      searchFilter.category = categoryId
+    if (categoryId && categoryId.trim() !== "") {
+      searchFilter.category = categoryId.trim()
     }
 
     if (minPrice || maxPrice) {
