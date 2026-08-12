@@ -1,37 +1,39 @@
 import 'package:flutter/material.dart';
 
-/// MR Mega Mart Centralized Brand Design Color System
+/// MR Mega Mart Centralized Brand Design Color System — Phase 13 Specification
 class AppColors {
-  // Brand Core Colors
-  static const Color primary = Color(0xFF1A602B); // Emerald Grocery Green
-  static const Color primaryAccent = Color(0xFF2DBE55); // Fresh Mint
-  static const Color surface = Color(0xFFF8FAFC); // Slate Soft Canvas
-  static const Color cardBackground = Color(0xFFFFFFFF); // Pure White Card
+  // Brand Core Colors (Phase 13 Reference Palette)
+  static const Color primary = Color(0xFF168A3A); // Emerald Grocery Green
+  static const Color primaryDark = Color(0xFF0F6B2C); // Deep Forest Green
+  static const Color primaryAccent = Color(0xFF2DBE55); // Fresh Mint Accent
+  static const Color softGreen = Color(0xFFEAF8EE); // Soft Green Surface Highlight
+  static const Color surface = Color(0xFFF8FAF8); // Pale Neutral App Canvas
+  static const Color cardBackground = Color(0xFFFFFFFF); // Pure White Surface
   
   // Typography Colors
-  static const Color textPrimary = Color(0xFF0F172A); // Dark Slate Body/Headers
-  static const Color textSecondary = Color(0xFF64748B); // Muted Slate Captions
-  static const Color textMuted = Color(0xFF94A3B8); // Light Muted Slate
+  static const Color textPrimary = Color(0xFF18201A); // Dark Commercial Slate Text
+  static const Color textSecondary = Color(0xFF6B756D); // Muted Secondary Slate
+  static const Color textMuted = Color(0xFF9EA69F); // Light Subtitle Muted Slate
   
-  // Structural Colors
-  static const Color border = Color(0xFFE2E8F0); // Subtle Divider/Border
-  static const Color borderFocused = Color(0xFF1A602B);
+  // Structural & Border Colors
+  static const Color border = Color(0xFFE5EAE6); // Subtle Card/Divider Border
+  static const Color borderFocused = Color(0xFF168A3A);
   
   // Semantic State Colors
-  static const Color success = Color(0xFF16A34A);
-  static const Color warning = Color(0xFFD97706);
-  static const Color error = Color(0xFFDC2626);
+  static const Color success = Color(0xFF168A3A);
+  static const Color warning = Color(0xFFF59E0B);
+  static const Color error = Color(0xFFD92D20);
   static const Color disabled = Color(0xFFCBD5E1);
 
   // Legacy Aliases for 100% Backward Compatibility
-  static const Color primaryDarkColor = Color(0xFF0F172A);
-  static const Color primaryLightColor = Color(0xFF1A602B);
-  static const Color primaryLightColorDarker = Color(0xFF144D22);
-  static const Color whitePinkColor = Color(0xFFDCFCE7);
+  static const Color primaryDarkColor = Color(0xFF0F6B2C);
+  static const Color primaryLightColor = Color(0xFF168A3A);
+  static const Color primaryLightColorDarker = Color(0xFF0F6B2C);
+  static const Color whitePinkColor = Color(0xFFEAF8EE);
   static const Color white = Color(0xFFFFFFFF);
-  static const Color gray = Color(0xFF64748B);
-  static const Color offWhite = Color(0xFFF8FAFC);
-  static const Color lightGray = Color(0xFFE2E8F0);
+  static const Color gray = Color(0xFF6B756D);
+  static const Color offWhite = Color(0xFFF8FAF8);
+  static const Color lightGray = Color(0xFFE5EAE6);
 }
 
 // Global Aliases
