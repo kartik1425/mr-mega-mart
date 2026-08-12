@@ -42,7 +42,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
         sortBy: event.queryParams?.sortBy,
       );
 
-      if (event.query != null) {
+      if (event.query != null && event.query!.isNotEmpty) {
         // Search with query and optional category
         response = await productsRepository.searchProducts(
           query: event.query!,
@@ -50,7 +50,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
           page: event.page,
           queryParams: queryParams,
         );
-      } else if (event.categoryId != null) {
+      } else if (event.categoryId != null && event.categoryId!.isNotEmpty) {
         // Fetch products by category
         response = await productsRepository.getProductsByCategory(
           categoryId: event.categoryId!,
@@ -58,7 +58,13 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
           queryParams: queryParams,
         );
       } else {
-        throw Exception("Either query or categoryId must be provided.");
+        // Default to search with empty query to fetch top feed products cleanly
+        response = await productsRepository.searchProducts(
+          query: "",
+          categoryId: event.categoryId,
+          page: event.page,
+          queryParams: queryParams,
+        );
       }
 
       if (event.page > 1 && state.productsResponse != null) {

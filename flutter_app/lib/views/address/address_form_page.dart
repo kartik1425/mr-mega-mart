@@ -30,10 +30,12 @@ class _AddressFormPageState extends State<AddressFormPage> {
 
   late String addressType;
   late bool isDefault;
+  late AddressBloc _addressBloc;
 
   @override
   void initState() {
     super.initState();
+    _addressBloc = AddressBloc();
 
     fullNameController = TextEditingController(text: widget.address?.fullName ?? "");
     phoneNumberController = TextEditingController(text: widget.address?.phoneNumber ?? "");
@@ -41,7 +43,7 @@ class _AddressFormPageState extends State<AddressFormPage> {
     cityController = TextEditingController(text: widget.address?.city ?? "");
     stateController = TextEditingController(text: widget.address?.state ?? "");
     postalCodeController = TextEditingController(text: widget.address?.postalCode ?? "");
-    countryController = TextEditingController(text: widget.address?.country ?? "USA");
+    countryController = TextEditingController(text: widget.address?.country ?? "India");
     addressType = widget.address?.addressType ?? "home";
     isDefault = widget.address?.isDefault ?? false;
   }
@@ -55,10 +57,11 @@ class _AddressFormPageState extends State<AddressFormPage> {
     stateController.dispose();
     postalCodeController.dispose();
     countryController.dispose();
+    _addressBloc.close();
     super.dispose();
   }
 
-  void _saveAddress(BuildContext context) {
+  void _saveAddress() {
     final fullName = fullNameController.text.trim();
     final phoneNumber = phoneNumberController.text.trim();
     final address = addressController.text.trim();
@@ -92,12 +95,10 @@ class _AddressFormPageState extends State<AddressFormPage> {
       isDefault: isDefault,
     );
 
-    final bloc = BlocProvider.of<AddressBloc>(context);
-
     if (widget.address == null) {
-      bloc.add(CreateAddressEvent(request: request));
+      _addressBloc.add(CreateAddressEvent(request: request));
     } else {
-      bloc.add(UpdateAddressEvent(
+      _addressBloc.add(UpdateAddressEvent(
         request: request,
         addressId: widget.address!.id,
       ));
@@ -106,8 +107,8 @@ class _AddressFormPageState extends State<AddressFormPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => AddressBloc(),
+    return BlocProvider.value(
+      value: _addressBloc,
       child: Scaffold(
         backgroundColor: white,
         appBar: AppBarWithBackButton(
@@ -225,7 +226,7 @@ class _AddressFormPageState extends State<AddressFormPage> {
                       text: widget.address != null ? "Update" : "Save",
                       textColor: Colors.white,
                       color: primaryLightColor,
-                      onClick: isLoading ? () {} : () => _saveAddress(context),
+                      onClick: isLoading ? () {} : _saveAddress,
                     ),
                   ],
                 ),

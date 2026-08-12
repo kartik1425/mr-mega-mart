@@ -26,12 +26,12 @@ class _HomePageState extends State<HomePage> {
 
   final List<Map<String, dynamic>> _categories = [
     {'id': 'all', 'name': 'ALL', 'icon': Icons.grid_view_rounded},
-    {'id': 'veg', 'name': 'Vegetables', 'icon': Icons.eco_outlined},
-    {'id': 'fruits', 'name': 'Fruits', 'icon': Icons.apple_outlined},
-    {'id': 'bakery', 'name': 'Bakery', 'icon': Icons.bakery_dining_outlined},
-    {'id': 'meat', 'name': 'Meat', 'icon': Icons.kebab_dining_outlined},
-    {'id': 'dairy', 'name': 'Dairy', 'icon': Icons.water_drop_outlined},
-    {'id': 'snacks', 'name': 'Snacks', 'icon': Icons.cookie_outlined},
+    {'id': 'bakery', 'name': 'Bakery & Breads', 'icon': Icons.bakery_dining_outlined},
+    {'id': 'snacks', 'name': 'Snacks & Biscuits', 'icon': Icons.cookie_outlined},
+    {'id': 'staples', 'name': 'Staples & Grains', 'icon': Icons.rice_bowl_outlined},
+    {'id': 'beverages', 'name': 'Beverages & Drinks', 'icon': Icons.local_drink_outlined},
+    {'id': 'dairy', 'name': 'Dairy & Eggs', 'icon': Icons.water_drop_outlined},
+    {'id': 'household', 'name': 'Household Care', 'icon': Icons.cleaning_services_outlined},
   ];
 
   @override
@@ -209,6 +209,8 @@ class _HomePageState extends State<HomePage> {
                             setState(() {
                               _selectedCategoryIndex = index;
                             });
+                            final catId = category['id'] == 'all' ? null : category['id'] as String;
+                            _productsBloc.add(ProductsRequested(page: 1, categoryId: catId));
                           },
                           borderRadius: BorderRadius.circular(20.0),
                           child: AnimatedContainer(
@@ -258,9 +260,20 @@ class _HomePageState extends State<HomePage> {
                       });
                     }
                     if (addCartState.isFailure) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Error: ${addCartState.errorMessage}'), backgroundColor: AppColors.error),
-                      );
+                      final String errorMsg = addCartState.errorMessage;
+                      if (errorMsg.toLowerCase().contains('unauthorized') || errorMsg.contains('401')) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Please sign in to add items to your cart.'),
+                            backgroundColor: AppColors.primary,
+                          ),
+                        );
+                        context.pushNamed('login');
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Error: $errorMsg'), backgroundColor: AppColors.error),
+                        );
+                      }
                       setState(() { _loadingProductId = null; });
                     }
                     if (addCartState.isSuccess && addCartState.response != null) {

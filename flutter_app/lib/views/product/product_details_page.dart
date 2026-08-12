@@ -129,6 +129,17 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                               );
                             }
                           },
+                          onBuyNow: () {
+                            _cartOperationBloc.add(
+                              AddItemEvent(
+                                request: AddItemToCartRequest(
+                                  productId: product.id,
+                                  quantity: 1,
+                                ),
+                              ),
+                            );
+                            context.pushNamed('checkout');
+                          },
                           isAddToCartActive: product.stockCount > 0,
                           isLoading: isLoading,
                           buttonText: buttonText,

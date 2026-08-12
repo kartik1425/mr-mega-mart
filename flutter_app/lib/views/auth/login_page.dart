@@ -103,11 +103,18 @@ class _LoginPageState extends State<LoginPage> {
                       BlocConsumer<SignInBloc, SignInState>(
                         listener: (context, state) {
                           if (state.isSuccess) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Welcome back to MR Mega Mart!"),
+                                backgroundColor: AppColors.primary,
+                              ),
+                            );
                             context.goNamed('mainPage');
                           } else if (state.isFailure) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("Login Failed!"),
+                              SnackBar(
+                                content: Text(state.errorMessage ?? "Login Failed. Please check your credentials."),
+                                backgroundColor: AppColors.error,
                               ),
                             );
                           }

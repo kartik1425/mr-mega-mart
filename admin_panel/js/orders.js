@@ -81,8 +81,11 @@ class AdminOrders {
         if (o.status === 'pending') badgeClass = 'badge-warning';
         if (o.status === 'cancelled' || o.status === 'failed') badgeClass = 'badge-danger';
 
-        const customerName = o.userId ? `${o.userId.userFirstName || ''} ${o.userId.userLastName || ''}`.trim() : 'Guest';
+        const customerName = o.deliveryAddress?.fullName || (o.userId ? `${o.userId.userFirstName || ''} ${o.userId.userLastName || ''}`.trim() : 'Guest');
         const customerEmail = o.userId?.email || 'N/A';
+        const customerPhone = o.deliveryAddress?.phoneNumber || 'N/A';
+        const deliveryAddr = o.deliveryAddress ? `${o.deliveryAddress.address || ''}, ${o.deliveryAddress.city || ''}, ${o.deliveryAddress.state || ''}` : 'No Address';
+        const paymentMethod = o.paymentIntentId?.startsWith('COD') ? 'Cash on Delivery (COD)' : (o.paymentIntentId ? 'Card / Stripe' : 'COD');
         const dateStr = new Date(o.createdAt).toLocaleString();
 
         let transitionOptions = '';
@@ -105,11 +108,14 @@ class AdminOrders {
           <tr>
             <td>
               <div style="font-weight:600; color:white;">${o._id}</div>
-              <div style="font-size:0.75rem; color:var(--text-muted);">${o.paymentIntentId || 'No Payment ID'}</div>
+              <div style="font-size:0.75rem; color:#168A3A; font-weight:bold;">${paymentMethod}</div>
+              <div style="font-size:0.75rem; color:var(--text-muted);">${o.paymentIntentId || 'COD'}</div>
             </td>
             <td>
               <div style="font-weight:600; color:white;">${this.escapeHtml(customerName)}</div>
               <div style="font-size:0.75rem; color:var(--text-muted);">${this.escapeHtml(customerEmail)}</div>
+              <div style="font-size:0.75rem; color:#2DBE55;">📞 ${this.escapeHtml(customerPhone)}</div>
+              <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">📍 ${this.escapeHtml(deliveryAddr)}</div>
             </td>
             <td style="font-weight:700; font-size:1.05rem;">$${(o.amount || 0).toFixed(2)}</td>
             <td><span class="badge ${badgeClass}">${o.status}</span></td>

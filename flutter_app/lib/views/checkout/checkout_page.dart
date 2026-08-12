@@ -29,6 +29,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
   late AddressBloc _addressBloc;
   late GetCartBloc _cartBloc;
   late PaymentBloc _paymentBloc;
+  String _paymentMethod = 'COD'; // Default to Cash on Delivery
 
   @override
   void initState() {
@@ -111,7 +112,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
         BlocProvider(create: (context) => _paymentBloc),
       ],
       child: Scaffold(
-        backgroundColor: white,
+        backgroundColor: AppColors.surface,
         appBar: AppBarWithBackButton(
           title: "Checkout",
           onBackClicked: () => context.pop(),
@@ -147,9 +148,69 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     ),
                     const SizedBox(height: 20),
                     const DeliveryDateSection(),
-                    const SizedBox(height: 40),
+                    const SizedBox(height: 20),
+
+                    // Payment Method Options Card
+                    Container(
+                      padding: const EdgeInsets.all(16.0),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(14.0),
+                        border: Border.all(color: AppColors.border, width: 1.0),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Select Payment Method',
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: AppColors.textPrimary),
+                          ),
+                          const SizedBox(height: 10.0),
+                          RadioListTile<String>(
+                            value: 'COD',
+                            groupValue: _paymentMethod,
+                            activeColor: AppColors.primary,
+                            contentPadding: EdgeInsets.zero,
+                            title: const Row(
+                              children: [
+                                Icon(Icons.money_rounded, color: AppColors.primary, size: 20),
+                                SizedBox(width: 8),
+                                Text('Cash on Delivery (COD)', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                              ],
+                            ),
+                            subtitle: const Text('Pay when your groceries arrive', style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+                            onChanged: (val) {
+                              setState(() {
+                                _paymentMethod = val!;
+                              });
+                            },
+                          ),
+                          const Divider(height: 1),
+                          RadioListTile<String>(
+                            value: 'CARD',
+                            groupValue: _paymentMethod,
+                            activeColor: AppColors.primary,
+                            contentPadding: EdgeInsets.zero,
+                            title: const Row(
+                              children: [
+                                Icon(Icons.credit_card_rounded, color: AppColors.primary, size: 20),
+                                SizedBox(width: 8),
+                                Text('Online Payment (Card / Stripe / UPI)', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                              ],
+                            ),
+                            subtitle: const Text('Secure instant checkout', style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+                            onChanged: (val) {
+                              setState(() {
+                                _paymentMethod = val!;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 20),
                     OrderSummarySection(cart: cart),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 20),
                   ],
                 ),
               );
@@ -173,22 +234,36 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   final hasDefaultAddress = addressState.address != null;
                   return Container(
                     color: Colors.white,
-                    padding: const EdgeInsets.only(left: 16, right: 16, bottom: 30),
+                    padding: const EdgeInsets.only(left: 16, right: 16, bottom: 20, top: 10),
                     child: CustomButton(
-                      text: state.isLoading ? "Processing..." : "Pay Now",
-                      textColor: white,
-                      color: primaryLightColor,
+                      text: state.isLoading
+                          ? "Processing..."
+                          : (_paymentMethod == 'COD' ? "Place Order (Cash on Delivery)" : "Pay Now (Online)"),
+                      textColor: Colors.white,
+                      color: AppColors.primary,
                       isLoading: state.isLoading,
                       onClick: () {
                         if (state.isLoading) return;
-                        if (hasDefaultAddress) {
-                          context.read<PaymentBloc>().add(PaymentIntentRequested());
-                        } else {
+                        if (!hasDefaultAddress) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text("You need to set a default address to continue!"),
+                              content: Text("Please select or add a delivery address to continue!"),
+                              backgroundColor: AppColors.error,
                             ),
                           );
+                          return;
+                        }
+
+                        if (_paymentMethod == 'COD') {
+                          final codPaymentId = 'COD-${DateTime.now().millisecondsSinceEpoch}';
+                          context.goNamed(
+                            'paymentSuccessful',
+                            pathParameters: {
+                              'paymentIntentId': codPaymentId,
+                            },
+                          );
+                        } else {
+                          context.read<PaymentBloc>().add(PaymentIntentRequested());
                         }
                       },
                     ),

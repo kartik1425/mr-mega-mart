@@ -582,7 +582,7 @@ exports.getAdminOrders = async (req, res) => {
     const [orders, total] = await Promise.all([
       Order.find(query)
         .populate('userId', 'userFirstName userLastName email')
-        .populate('deliveryAddress', 'address city state postalCode country')
+        .populate('deliveryAddress', 'fullName phoneNumber address city state postalCode country')
         .populate('items.productId', 'title imageURLs price')
         .sort({ createdAt: -1 })
         .skip(skip)
