@@ -239,7 +239,11 @@ exports.searchProducts = async (req, res) => {
 
     const [products, totalProducts] = await Promise.all([
       Product.find(searchFilter)
-        .sort({ ...sortOptions, score: { $meta: "textScore" } })
+        .sort(
+          searchFilter.$text
+            ? { ...sortOptions, score: { $meta: "textScore" } }
+            : sortOptions
+        )
         .skip(skip)
         .limit(Number(limit))
         .populate("category", "name description"),

@@ -51,17 +51,17 @@ class UserOrder {
 
   factory UserOrder.fromJson(Map<String, dynamic> json) {
     return UserOrder(
-      id: json['_id'],
-      userId: json['userId'],
-      deliveryAddress: json['deliveryAddress'],
-      paymentIntentId: json['paymentIntentId'],
-      amount: (json['amount'] as num).toDouble(),
-      currency: json['currency'],
-      status: json['status'],
-      items: (json['items'] as List)
-          .map((item) => UserOrderItem.fromJson(item))
-          .toList(),
-      createdAt: DateTime.parse(json['createdAt']),
+      id: json['_id'] ?? '',
+      userId: json['userId'] ?? '',
+      deliveryAddress: json['deliveryAddress'] ?? '',
+      paymentIntentId: json['paymentIntentId'] ?? '',
+      amount: (json['amount'] as num?)?.toDouble() ?? 0.0,
+      currency: json['currency'] ?? 'inr',
+      status: json['status'] ?? 'pending',
+      items: (json['items'] as List?)
+          ?.map((item) => UserOrderItem.fromJson(item))
+          .toList() ?? [],
+      createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt']) : DateTime.now(),
     );
   }
 
@@ -95,10 +95,10 @@ class UserOrderItem {
 
   factory UserOrderItem.fromJson(Map<String, dynamic> json) {
     return UserOrderItem(
-      productId: json['productId'],
-      quantity: json['quantity'],
-      price: (json['price'] as num).toDouble(),
-      id: json['_id'],
+      productId: json['productId'] ?? '',
+      quantity: json['quantity'] ?? 1,
+      price: (json['price'] as num?)?.toDouble() ?? 0.0,
+      id: json['_id'] ?? '',
     );
   }
 

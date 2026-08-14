@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mrmegamart_app/models/product/product_model.dart';
 import 'package:mrmegamart_app/theme/colors.dart';
 import 'package:mrmegamart_app/theme/text_styles.dart';
+import 'package:go_router/go_router.dart';
 import 'buttons/heart_button.dart';
 import 'product_rating_stars.dart';
 
@@ -230,7 +231,7 @@ class ProductCard extends StatelessWidget {
                               'Sold Out',
                               style: AppTextStyles.caption.copyWith(color: AppColors.textMuted),
                             )
-                          else if (productInCart)
+                          else if (productInCart && onIncrement != null && onDecrement != null)
                             Container(
                               decoration: BoxDecoration(
                                 color: AppColors.primary,
@@ -262,6 +263,25 @@ class ProductCard extends StatelessWidget {
                                   ),
                                 ],
                               ),
+                            )
+                          else if (productInCart)
+                            ElevatedButton.icon(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.softGreen,
+                                foregroundColor: AppColors.primary,
+                                elevation: 0,
+                                padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 8.0),
+                                minimumSize: const Size(0, 34),
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                              ),
+                              onPressed: () {
+                                context.pushNamed('cart');
+                              },
+                              icon: const Icon(Icons.shopping_cart_checkout, size: 15),
+                              label: const Text('In Cart', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
                             )
                           else
                             ElevatedButton.icon(

@@ -23,17 +23,17 @@ class OrderData {
 
   factory OrderData.fromJson(Map<String, dynamic> json) {
     return OrderData(
-      id: json['_id'],
-      userId: json['userId'],
+      id: json['_id'] ?? '',
+      userId: json['userId'] ?? '',
       deliveryAddress: json['deliveryAddress'] != null ? DeliveryAddress.fromJson(json['deliveryAddress']) : null,
-      paymentIntentId: json['paymentIntentId'],
-      amount: (json['amount'] as num).toDouble(),
-      currency: json['currency'],
-      status: json['status'],
-      items: (json['items'] as List)
-          .map((item) => OrderItem.fromJson(item))
-          .toList(),
-      createdAt: DateTime.parse(json['createdAt']),
+      paymentIntentId: json['paymentIntentId'] ?? '',
+      amount: (json['amount'] as num?)?.toDouble() ?? 0.0,
+      currency: json['currency'] ?? 'inr',
+      status: json['status'] ?? 'pending',
+      items: (json['items'] as List?)
+          ?.map((item) => OrderItem.fromJson(item))
+          .toList() ?? [],
+      createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt']) : DateTime.now(),
     );
   }
 
@@ -69,11 +69,11 @@ class DeliveryAddress {
 
   factory DeliveryAddress.fromJson(Map<String, dynamic> json) {
     return DeliveryAddress(
-      id: json['_id'],
-      address: json['address'],
-      city: json['city'],
-      state: json['state'],
-      country: json['country'],
+      id: json['_id'] ?? '',
+      address: json['address'] ?? '',
+      city: json['city'] ?? '',
+      state: json['state'] ?? '',
+      country: json['country'] ?? '',
     );
   }
 
@@ -107,11 +107,11 @@ class OrderItem {
 
   factory OrderItem.fromJson(Map<String, dynamic> json) {
     return OrderItem(
-      id: json['_id'],
+      id: json['_id'] ?? '',
       productId: json['productId'] != null ? json['productId']['_id'] ?? '' : '',
       imageURLs: json['productId'] != null && json['productId']['imageURLs'] != null ? List<String>.from(json['productId']['imageURLs']) : [],
       title: json['productId'] != null ? json['productId']['title'] ?? 'Product unavailable' : 'Product unavailable',
-      quantity: json['quantity'],
+      quantity: json['quantity'] ?? 1,
       price: json['productId'] != null ? (json['productId']['price'] ?? json['price'] ?? 0).toDouble() : (json['price'] ?? 0).toDouble(),
     );
   }

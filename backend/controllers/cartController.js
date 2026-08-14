@@ -403,7 +403,7 @@ const calculateCargoFee = (cart) => {
 
   const totalAmount = cart.items.reduce((sum, item) => {
     if (!item.productId || (typeof item.productId.price !== "number" && typeof item.productId.salePrice !== "number")) {
-      throw new Error("Item price or salePrice is missing or invalid")
+      return sum
     }
 
     const price = item.productId.salePrice ?? item.productId.price
