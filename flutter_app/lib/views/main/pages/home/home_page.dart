@@ -29,7 +29,6 @@ class _HomePageState extends State<HomePage> {
   List<Map<String, dynamic>> _categories = [
     {'id': 'all', 'name': 'ALL', 'icon': Icons.grid_view_rounded},
   ];
-  bool _categoriesLoading = true;
 
   @override
   void initState() {
@@ -92,15 +91,10 @@ class _HomePageState extends State<HomePage> {
         if (mounted) {
           setState(() {
             _categories = apiCategories;
-            _categoriesLoading = false;
           });
         }
-      } else {
-        if (mounted) setState(() => _categoriesLoading = false);
       }
-    } catch (_) {
-      if (mounted) setState(() => _categoriesLoading = false);
-    }
+    } catch (_) {}
   }
 
   @override

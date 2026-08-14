@@ -49,7 +49,7 @@ void main() async {
     debugPrint("[Init] Error during initializeApp: $e");
   }
 
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 Future<void> initializeApp() async {

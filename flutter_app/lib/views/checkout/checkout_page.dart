@@ -265,21 +265,25 @@ class _CheckoutPageState extends State<CheckoutPage> {
                             final paymentId = order != null && order['paymentId'] != null
                                 ? order['paymentId'].toString()
                                 : 'COD-${DateTime.now().millisecondsSinceEpoch}';
-                            context.goNamed(
-                              'paymentSuccessful',
-                              pathParameters: {
-                                'paymentIntentId': paymentId,
-                              },
-                            );
+                            if (mounted) {
+                              context.goNamed(
+                                'paymentSuccessful',
+                                pathParameters: {
+                                  'paymentIntentId': paymentId,
+                                },
+                              );
+                            }
                           }).catchError((err) {
                             if (!mounted) return;
                             setState(() { _isProcessingCod = false; });
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text("Failed to place COD order: ${err.toString().replaceAll('Exception: ', '')}"),
-                                backgroundColor: AppColors.error,
-                              ),
-                            );
+                            if (mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text("Failed to place COD order: ${err.toString().replaceAll('Exception: ', '')}"),
+                                  backgroundColor: AppColors.error,
+                                ),
+                              );
+                            }
                           });
                         } else {
                           context.read<PaymentBloc>().add(PaymentIntentRequested());

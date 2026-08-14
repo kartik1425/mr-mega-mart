@@ -155,7 +155,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                       ),
                       const SizedBox(height: 16),
                       ...order.items.map((item) {
-                        final String pId = item.productId ?? '';
+                        final String pId = item.productId;
                         return OrderDetailsProductCard(
                           productId: pId,
                           productTitle: item.productTitle,
