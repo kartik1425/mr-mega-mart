@@ -119,7 +119,9 @@ class _MyOrdersPageState extends State<MyOrdersPage> {
                             ),
                             const SizedBox(height: 16),
                             Text(
-                              state.errorMessage ?? "Failed to load orders.",
+                              state.errorMessage != null
+                                  ? state.errorMessage!.replaceAll('Exception: ', '')
+                                  : "Failed to load orders.",
                               textAlign: TextAlign.center,
                               style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
                             ),
