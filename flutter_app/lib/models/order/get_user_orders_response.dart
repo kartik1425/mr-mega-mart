@@ -14,13 +14,15 @@ class GetUserOrdersResponse {
   });
 
   factory GetUserOrdersResponse.fromJson(Map<String, dynamic> json) {
+    final pagination = json['pagination'] as Map<String, dynamic>?;
     return GetUserOrdersResponse(
-      success: json['success'],
-      orders: (json['orders'] as List)
-          .map((order) => OrderData.fromJson(order))
-          .toList(),
-      currentPage: json['currentPage'],
-      totalPages: json['totalPages'],
+      success: json['success'] ?? true,
+      orders: (json['orders'] as List?)
+              ?.map((order) => OrderData.fromJson(order))
+              .toList() ??
+          [],
+      currentPage: pagination?['page'] ?? json['currentPage'] ?? 1,
+      totalPages: pagination?['totalPages'] ?? json['totalPages'] ?? 1,
     );
   }
 
