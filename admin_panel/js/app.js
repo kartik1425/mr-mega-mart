@@ -12,6 +12,7 @@ class AdminRouter {
     '/users': 'renderUsers',
     '/reviews': 'renderReviews',
     '/subscriptions': 'renderSubscriptions',
+    '/settings': 'renderSettings',
   };
 
   static currentRoute = '/dashboard';
@@ -172,6 +173,13 @@ class AdminRouter {
               💳 Subscriptions & Trials
             </a>
           </li>
+
+          <li class="nav-section-title">SETTINGS</li>
+          <li>
+            <a href="#/settings" class="nav-link ${activeRoute === '/settings' ? 'active' : ''}">
+              ⚙️ Store & Delivery Rates
+            </a>
+          </li>
         </ul>
 
         <div class="sidebar-footer">
@@ -230,6 +238,9 @@ class AdminRouter {
     } else if (activeRoute === '/subscriptions') {
       pageTitleText.textContent = 'Active Subscriptions & Trials';
       window.AdminSubscriptions.render(contentContainer);
+    } else if (activeRoute === '/settings') {
+      pageTitleText.textContent = 'Store Location & Delivery Settings';
+      window.AdminSettings.render(contentContainer);
     } else {
       window.location.hash = '/dashboard';
     }

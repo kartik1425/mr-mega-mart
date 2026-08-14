@@ -40,19 +40,15 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
   }
 
   Color _getStatusColor(String status) {
-    switch (status) {
+    switch (status.toLowerCase()) {
       case 'pending':
-        return Colors.grey;
-      case 'shipping':
-        return Colors.blue;
+        return Colors.orange.shade700;
       case 'delivered':
-        return Colors.green;
-      case 'returned':
-        return Colors.grey.shade600;
+        return Colors.green.shade700;
       case 'cancelled':
-        return Colors.red;
+        return Colors.red.shade700;
       default:
-        return Colors.grey;
+        return Colors.orange.shade700;
     }
   }
 

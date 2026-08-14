@@ -3,6 +3,7 @@ const Product = require('../models/Product')
 const Cart = require('../models/Cart')
 const UserAddress = require('../models/UserAddress')
 const { logger } = require('../services/logger')
+const { calculateDeliveryFeeForCart } = require('../services/deliveryService')
 
 exports.createCodOrder = async (req, res) => {
   try {
@@ -40,6 +41,9 @@ exports.createCodOrder = async (req, res) => {
       }
     }
 
+    const deliveryInfo = await calculateDeliveryFeeForCart(cart, defaultAddress)
+    amount += deliveryInfo.deliveryFee
+
     const paymentId = 'COD-' + Date.now()
     const order = new Order({
       userId,
@@ -75,12 +79,9 @@ exports.createCodOrder = async (req, res) => {
 
 // Valid Order State Machine Transition Matrix
 const ALLOWED_TRANSITIONS = {
-  pending: ['shipping', 'cancelled', 'failed'],
-  shipping: ['delivered', 'cancelled'],
-  delivered: ['returned'],
-  returned: [],
+  pending: ['delivered', 'cancelled'],
+  delivered: [],
   cancelled: [],
-  failed: [],
 }
 
 exports.ALLOWED_TRANSITIONS = ALLOWED_TRANSITIONS

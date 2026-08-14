@@ -1,7 +1,7 @@
 const Cart = require("../models/Cart")
 const Product = require("../models/Product")
-const CARGO_FEE_THRESHOLD = 200 // TODO: store in db
-const CARGO_FEE = 35 // TODO. TODO: store in db
+const UserAddress = require("../models/UserAddress")
+const { calculateDeliveryFeeForCart } = require("../services/deliveryService")
 
 exports.createEmptyCartForUser = async (userId) => {
   try {
@@ -45,7 +45,8 @@ exports.getCart = async (req, res) => {
       quantity: item.quantity,
     }))
 
-    const cargoFee = calculateCargoFee(cart)
+    const defaultAddress = await UserAddress.findOne({ userId, isDefault: true })
+    const deliveryInfo = await calculateDeliveryFeeForCart(cart, defaultAddress)
 
     res.status(200).json({
       success: true,
@@ -53,9 +54,11 @@ exports.getCart = async (req, res) => {
         ownerId: cart.ownerId,
         items: transformedItems,
         updatedAt: cart.updatedAt,
-        cargoFee: cargoFee,
+        cargoFee: deliveryInfo.deliveryFee,
+        distanceKm: deliveryInfo.distanceKm,
+        isFreeDelivery: deliveryInfo.isFreeDelivery,
       },
-      cargoFeeThreshold: CARGO_FEE_THRESHOLD,
+      cargoFeeThreshold: deliveryInfo.freeDeliveryThreshold,
     })
   } catch (error) {
     console.error('Error fetching cart:', error)

@@ -2,12 +2,10 @@
 
 class AdminOrders {
   static ALLOWED_TRANSITIONS = {
-    pending: ['shipping', 'cancelled'],
-    shipping: ['delivered', 'returned'],
-    delivered: ['returned'],
+    pending: ['delivered', 'cancelled'],
+    delivered: [],
     cancelled: [],
     failed: [],
-    returned: [],
   };
 
   static cachedOrders = [];
