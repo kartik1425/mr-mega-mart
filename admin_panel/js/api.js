@@ -29,19 +29,20 @@ class AdminApiClient {
 
     try {
       const response = await fetch(url, config);
+      const data = await response.json().catch(() => ({}));
 
       if (response.status === 401) {
-        if (window.AdminAuthManager) {
-          window.AdminAuthManager.clearSession();
+        if (!endpoint.includes('/login')) {
+          if (window.AdminAuthManager) {
+            window.AdminAuthManager.clearSession();
+          }
+          throw new Error('Session expired or unauthorized. Please log in again.');
         }
-        throw new Error('Session expired or unauthorized. Please log in again.');
       }
 
       if (response.status === 403) {
-        throw new Error('Access denied. Administrative authorization required.');
+        throw new Error(data.message || 'Access denied. Administrative authorization required.');
       }
-
-      const data = await response.json().catch(() => ({}));
 
       if (!response.ok) {
         throw new Error(data.message || `Request failed with status ${response.status}`);

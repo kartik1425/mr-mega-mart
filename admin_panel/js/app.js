@@ -63,7 +63,7 @@ class AdminRouter {
             </div>
           </div>
 
-          <div id="login-alert" class="alert alert-danger"></div>
+          <div id="login-alert" class="alert alert-danger" style="display:none; margin-bottom:1.25rem;"></div>
 
           <form id="admin-login-form">
             <div style="margin-bottom:1.25rem;">
