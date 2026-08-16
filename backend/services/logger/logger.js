@@ -1,4 +1,3 @@
-const pino = require('pino')
 const env = require('../../config/env')
 
 const redactPaths = [
@@ -22,19 +21,29 @@ const redactPaths = [
   'mongodbUri',
 ]
 
-const loggerOptions = {
-  level: env.LOG_LEVEL || 'info',
-  redact: {
-    paths: redactPaths,
-    censor: '[REDACTED]',
-  },
-  base: {
-    service: 'mr-mega-mart-backend',
-    environment: env.NODE_ENV,
-  },
-  timestamp: pino.stdTimeFunctions.isoTime,
+let logger
+try {
+  const pino = require('pino')
+  const loggerOptions = {
+    level: env.LOG_LEVEL || 'info',
+    redact: {
+      paths: redactPaths,
+      censor: '[REDACTED]',
+    },
+    base: {
+      service: 'mr-mega-mart-backend',
+      environment: env.NODE_ENV,
+    },
+    timestamp: pino.stdTimeFunctions.isoTime,
+  }
+  logger = pino(loggerOptions)
+} catch (_) {
+  logger = {
+    info: (...args) => console.log('[INFO]', ...args),
+    error: (...args) => console.error('[ERROR]', ...args),
+    warn: (...args) => console.warn('[WARN]', ...args),
+    debug: (...args) => console.debug('[DEBUG]', ...args),
+  }
 }
-
-const logger = pino(loggerOptions)
 
 module.exports = logger
