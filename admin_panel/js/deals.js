@@ -51,8 +51,15 @@ class AdminDeals {
             </div>
 
             <div style="margin-bottom:1rem;">
-              <label style="font-size:0.85rem; color:var(--text-muted); display:block; margin-bottom:0.3rem;">Banner Image URL *</label>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.3rem;">
+                <label style="font-size:0.85rem; color:var(--text-muted); margin:0;">Banner Image URL *</label>
+                <label class="btn btn-secondary" style="font-size:0.75rem; padding:0.25rem 0.6rem; cursor:pointer; margin:0;">
+                  ☁️ Upload Banner
+                  <input type="file" id="dm-file-upload" accept="image/*" style="display:none;" />
+                </label>
+              </div>
               <input type="text" id="dm-image" class="form-control" placeholder="https://example.com/banner.jpg" required />
+              <div id="dm-upload-progress" style="display:none; font-size:0.8rem; color:var(--primary); margin-top:0.3rem;">Uploading to Cloudinary: 0%</div>
             </div>
 
             <div style="display:grid; grid-template-columns: 2fr 1fr; gap: 1rem; margin-bottom:1rem;">
@@ -88,6 +95,36 @@ class AdminDeals {
     document.getElementById('dm-cancel-btn').addEventListener('click', () => {
       document.getElementById('deal-modal').style.display = 'none';
     });
+
+    const dmUpload = document.getElementById('dm-file-upload');
+    if (dmUpload) {
+      dmUpload.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const progressEl = document.getElementById('dm-upload-progress');
+        const imageInput = document.getElementById('dm-image');
+        if (progressEl) {
+          progressEl.style.display = 'block';
+          progressEl.style.color = 'var(--primary)';
+          progressEl.textContent = 'Uploading to Cloudinary: 0%';
+        }
+        try {
+          const result = await CloudinaryUploader.uploadFile(file, {
+            folder: 'mrmegamart/deals',
+            onProgress: (pct) => {
+              if (progressEl) progressEl.textContent = `Uploading to Cloudinary: ${pct}%`;
+            },
+          });
+          if (progressEl) progressEl.textContent = 'Upload successful!';
+          imageInput.value = result.url;
+        } catch (err) {
+          if (progressEl) {
+            progressEl.style.color = '#ef4444';
+            progressEl.textContent = `Upload failed: ${err.message}`;
+          }
+        }
+      });
+    }
     document.getElementById('deal-form').addEventListener('submit', (e) => this.handleFormSubmit(e));
 
     await this.loadDeals();

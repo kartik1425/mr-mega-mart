@@ -37,6 +37,7 @@ const likesRoute = require('./routes/likes')
 const trendingSearchesRoute = require('./routes/searchTrends')
 const userProfilesRoute = require('./routes/userProfiles')
 const adminRoute = require('./routes/admin')
+const mediaRoute = require('./routes/media')
 const settingsRoute = require('./routes/settings')
 
 // Global Request Correlation & Structured Logging Middlewares
@@ -161,6 +162,7 @@ app.use('/api/likes', likesRoute)
 app.use('/api/trendingSearches', trendingSearchesRoute)
 app.use('/api/userProfiles', userProfilesRoute)
 app.use('/api/admin', adminRoute)
+app.use('/api/admin/media', mediaRoute)
 app.use('/api/settings', settingsRoute)
 
 // Centralized Error Handling Middleware

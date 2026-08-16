@@ -94,8 +94,15 @@ class AdminProducts {
             </div>
 
             <div style="margin-bottom:1rem;">
-              <label style="font-size:0.85rem; color:var(--text-muted); display:block; margin-bottom:0.3rem;">Image URLs (comma separated) *</label>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.3rem;">
+                <label style="font-size:0.85rem; color:var(--text-muted); margin:0;">Image URLs (comma separated) *</label>
+                <label class="btn btn-secondary" style="font-size:0.75rem; padding:0.25rem 0.6rem; cursor:pointer; margin:0;">
+                  ☁️ Upload Image
+                  <input type="file" id="pm-file-upload" accept="image/*" style="display:none;" />
+                </label>
+              </div>
               <input type="text" id="pm-images" class="form-control" placeholder="https://example.com/image.jpg" required />
+              <div id="pm-upload-progress" style="display:none; font-size:0.8rem; color:var(--primary); margin-top:0.3rem;">Uploading to Cloudinary: 0%</div>
             </div>
 
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom:1.5rem;">
@@ -124,6 +131,37 @@ class AdminProducts {
       document.getElementById('product-modal').style.display = 'none';
     });
     document.getElementById('product-form').addEventListener('submit', (e) => this.handleFormSubmit(e));
+
+    const pmUpload = document.getElementById('pm-file-upload');
+    if (pmUpload) {
+      pmUpload.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const progressEl = document.getElementById('pm-upload-progress');
+        const imagesInput = document.getElementById('pm-images');
+        if (progressEl) {
+          progressEl.style.display = 'block';
+          progressEl.style.color = 'var(--primary)';
+          progressEl.textContent = 'Uploading to Cloudinary: 0%';
+        }
+        try {
+          const result = await CloudinaryUploader.uploadFile(file, {
+            folder: 'mrmegamart/products',
+            onProgress: (pct) => {
+              if (progressEl) progressEl.textContent = `Uploading to Cloudinary: ${pct}%`;
+            },
+          });
+          if (progressEl) progressEl.textContent = 'Upload successful!';
+          const current = imagesInput.value.trim();
+          imagesInput.value = current ? `${current}, ${result.url}` : result.url;
+        } catch (err) {
+          if (progressEl) {
+            progressEl.style.color = '#ef4444';
+            progressEl.textContent = `Upload failed: ${err.message}`;
+          }
+        }
+      });
+    }
 
     await this.loadCategories();
     await this.loadProducts();
