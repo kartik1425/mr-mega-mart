@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "name": "mr-mega-mart",
+  "cleanUrls": true,
+  "routes": [
+    {
+      "src": "/css/(.*)",
+      "dest": "/admin_panel/css/$1"
+    },
+    {
+      "src": "/js/(.*)",
+      "dest": "/admin_panel/js/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/admin_panel/index.html"
+    }
+  ]
+}
