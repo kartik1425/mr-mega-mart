@@ -22,6 +22,7 @@ import 'package:mrmegamart_app/views/subscription/subscription_successful_page.d
 import 'package:mrmegamart_app/views/subscription/subscription_view.dart';
 import 'package:mrmegamart_app/views/trial/trial_sucess_page.dart';
 import '../models/address/address.dart';
+import '../models/cart/cart.dart';
 import '../views/address/address_form_page.dart';
 import '../views/auth/login_page.dart';
 import '../views/auth/signup_page.dart';
@@ -136,7 +137,8 @@ class AppRouter {
         name: 'checkoutPage',
         path: '/checkoutPage',
         builder: (context, state) {
-          return const CheckoutPage();
+          final directItem = state.extra as CartItem?;
+          return CheckoutPage(directItem: directItem);
         },
       ),
       GoRoute(

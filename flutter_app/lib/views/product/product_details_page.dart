@@ -16,9 +16,11 @@ import 'package:mrmegamart_app/components/bottom_bar_with_cart_button.dart';
 import 'package:mrmegamart_app/components/product_description_text.dart';
 import 'package:mrmegamart_app/components/product_rating_stars.dart';
 import 'package:mrmegamart_app/components/product_tag_chip_card.dart';
+import 'package:mrmegamart_app/models/cart/cart.dart';
 import 'package:mrmegamart_app/models/cart/request/add_item_to_cart_request.dart';
 import 'package:mrmegamart_app/models/product/product_model.dart';
 import 'package:mrmegamart_app/theme/colors.dart';
+import 'package:mrmegamart_app/utils/auth_check.dart';
 
 class ProductDetailsPage extends StatefulWidget {
   final String productId;
@@ -90,66 +92,98 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             } else if (state.isSuccess && state.productResponse != null) {
               final Product product = state.productResponse!.product;
 
-              return Scaffold(
-                backgroundColor: white,
-                appBar: AppBarWithIcons(
-                  onBackClicked: () => context.pop("back"),
-                  //onHeartClicked: () {},
-                  onCartClicked: () {
-                    context.pushNamed('cart');
-                  },
-                ),
-                bottomNavigationBar: BlocBuilder<SingleProductBloc, SingleProductState>(
-                  builder: (context, singleProductState) {
-                    if (!singleProductState.isSuccess || singleProductState.productResponse == null) {
-                      return const SizedBox.shrink();
-                    }
-
-                    final product = singleProductState.productResponse!.product;
-
-                    return BlocBuilder<CartOperationBloc, CartOperationState>(
-                      builder: (context, cartState) {
-                        final isLoading = cartState.isLoading && cartState.currentProductId == product.id;
-                        final isInCart = singleProductState.isItemInCart || cartState.isSuccess;
-                        final buttonText = isInCart ? "Go to Cart" : "Add to Cart";
-
-                        return BottomBarWithCartButton(
-                          price: product.oldPrice ?? product.price,
-                          onAddToCart: () {
-                            if (isInCart) {
-                              context.pushNamed('cart');
-                            } else {
-                              _cartOperationBloc.add(
-                                AddItemEvent(
-                                  request: AddItemToCartRequest(
-                                    productId: product.id,
-                                    quantity: 1,
-                                  ),
-                                ),
-                              );
-                            }
-                          },
-                          onBuyNow: () {
-                            _cartOperationBloc.add(
-                              AddItemEvent(
-                                request: AddItemToCartRequest(
-                                  productId: product.id,
-                                  quantity: 1,
-                                ),
-                              ),
-                            );
-                            context.pushNamed('checkoutPage');
-                          },
-                          isAddToCartActive: product.stockCount > 0,
-                          isLoading: isLoading,
-                          buttonText: buttonText,
-                          cargoWeight: product.cargoWeight,
-                          salePrice: product.salePrice,
-                        );
-                      },
+              return BlocListener<CartOperationBloc, CartOperationState>(
+                listener: (context, cartOpState) {
+                  if (cartOpState.isSuccess) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Item added to cart!'),
+                        backgroundColor: AppColors.primary,
+                        duration: Duration(seconds: 2),
+                      ),
                     );
-                  },
-                ),
+                  } else if (cartOpState.isFailure) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Failed to add to cart: ${cartOpState.errorMessage}'),
+                        backgroundColor: AppColors.error,
+                        duration: const Duration(seconds: 2),
+                      ),
+                    );
+                  }
+                },
+                child: Scaffold(
+                  backgroundColor: white,
+                  appBar: AppBarWithIcons(
+                    onBackClicked: () => context.pop("back"),
+                    onCartClicked: () {
+                      context.pushNamed('cart');
+                    },
+                  ),
+                  bottomNavigationBar: BlocBuilder<SingleProductBloc, SingleProductState>(
+                    builder: (context, singleProductState) {
+                      if (!singleProductState.isSuccess || singleProductState.productResponse == null) {
+                        return const SizedBox.shrink();
+                      }
+
+                      final product = singleProductState.productResponse!.product;
+
+                      return BlocBuilder<CartOperationBloc, CartOperationState>(
+                        builder: (context, cartState) {
+                          final isLoading = cartState.isLoading && cartState.currentProductId == product.id;
+                          final isInCart = singleProductState.isItemInCart || cartState.isSuccess;
+                          final buttonText = isInCart ? "Go to Cart" : "Add to Cart";
+
+                          return BottomBarWithCartButton(
+                            price: product.oldPrice ?? product.price,
+                            onAddToCart: () async {
+                              if (isInCart) {
+                                context.pushNamed('cart');
+                              } else {
+                                final authenticated = await isAuthenticated();
+                                if (!context.mounted) return;
+                                if (!authenticated) {
+                                  context.pushNamed('login');
+                                  return;
+                                }
+                                _cartOperationBloc.add(
+                                  AddItemEvent(
+                                    request: AddItemToCartRequest(
+                                      productId: product.id,
+                                      quantity: 1,
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
+                            onBuyNow: () async {
+                              final authenticated = await isAuthenticated();
+                              if (!context.mounted) return;
+                              if (!authenticated) {
+                                context.pushNamed('login');
+                                return;
+                              }
+                              final directItem = CartItem(
+                                productId: product.id,
+                                title: product.title,
+                                imageURL: product.imageURLs.isNotEmpty ? product.imageURLs.first : '',
+                                cargoWeight: product.cargoWeight,
+                                stockCount: product.stockCount,
+                                price: product.salePrice ?? product.price,
+                                quantity: 1,
+                              );
+                              context.pushNamed('checkoutPage', extra: directItem);
+                            },
+                            isAddToCartActive: product.stockCount > 0,
+                            isLoading: isLoading,
+                            buttonText: buttonText,
+                            cargoWeight: product.cargoWeight,
+                            salePrice: product.salePrice,
+                          );
+                        },
+                      );
+                    },
+                  ),
                 body: SingleChildScrollView(
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 16.0),
@@ -327,7 +361,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     ),
                   ),
                 ),
-              );
+              ),
+            );
             }
 
             return const Scaffold(

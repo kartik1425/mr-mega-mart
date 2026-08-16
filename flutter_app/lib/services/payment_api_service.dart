@@ -6,17 +6,16 @@ import '../utils/networking_manager.dart';
 class PaymentApiService{
   final NetworkingManager _networkingManager = GetIt.instance<NetworkingManager>();
 
-  Future<CreatePaymentIntentResponse> createPaymentIntent() async {
+  Future<CreatePaymentIntentResponse> createPaymentIntent({List<Map<String, dynamic>>? items}) async {
     try {
       final response = await _networkingManager.post(
-          endpoint: ApiEndpoints.createPaymentIntent,
-          addAuthToken: true,
-          body: {},
+        endpoint: ApiEndpoints.createPaymentIntent,
+        addAuthToken: true,
+        body: items != null && items.isNotEmpty ? {'items': items} : {},
       );
       return CreatePaymentIntentResponse.fromJson(response);
     }
     catch (e) {
-
       throw Exception('Failed to create payment intent: $e');
     }
   }

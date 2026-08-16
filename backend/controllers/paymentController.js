@@ -14,48 +14,74 @@ exports.createPaymentIntent = async (req, res) => {
     const userId = req.user.id
     const idempotencyKey = req.headers['idempotency-key'] || req.headers['x-idempotency-key'] || undefined
 
-    const cart = await Cart.findOne({ ownerId: userId }).populate({
-      path: 'items.productId',
-      select: 'price salePrice stockCount title',
-    })
-
-    if (!cart || cart.items.length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: 'Cart is empty. Add items to your cart before proceeding to payment.',
-      })
-    }
-
     let totalAmount = 0
+    let items = []
 
-    for (const item of cart.items) {
-      if (item.quantity > item.productId.stockCount) {
-        return res.status(400).json({
-          success: false,
-          message: `Insufficient stock for product: ${item.productId.title}`,
-        })
+    if (req.body && req.body.items && Array.isArray(req.body.items) && req.body.items.length > 0) {
+      // Direct Purchase Mode
+      for (const item of req.body.items) {
+        const product = await Product.findById(item.productId)
+        if (!product) {
+          return res.status(400).json({
+            success: false,
+            message: 'Product not found.',
+          })
+        }
+        const qty = parseInt(item.quantity, 10) || 1
+        if (qty > product.stockCount) {
+          return res.status(400).json({
+            success: false,
+            message: `Insufficient stock for product: ${product.title}`,
+          })
+        }
+        const price = product.salePrice ?? product.price
+        totalAmount += qty * price
       }
-
-      const price = item.productId.salePrice ?? item.productId.price
-
-      if (typeof price !== 'number') {
-        return res.status(400).json({
-          success: false,
-          message: `Invalid price for product: ${item.productId.title}`,
-        })
-      }
-
-      totalAmount += item.quantity * price
-    }
-
-    if (typeof cart.cargoFee !== 'number' || cart.cargoFee < 0) {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid cargo fee. Please check your cart.',
+      const deliveryFee = totalAmount >= 500 ? 0 : 40
+      totalAmount += deliveryFee
+    } else {
+      // Regular Cart Checkout Mode
+      const cart = await Cart.findOne({ ownerId: userId }).populate({
+        path: 'items.productId',
+        select: 'price salePrice stockCount title',
       })
-    }
 
-    totalAmount += cart.cargoFee
+      if (!cart || cart.items.length === 0) {
+        return res.status(400).json({
+          success: false,
+          message: 'Cart is empty. Add items to your cart before proceeding to payment.',
+        })
+      }
+
+      for (const item of cart.items) {
+        if (item.quantity > item.productId.stockCount) {
+          return res.status(400).json({
+            success: false,
+            message: `Insufficient stock for product: ${item.productId.title}`,
+          })
+        }
+
+        const price = item.productId.salePrice ?? item.productId.price
+
+        if (typeof price !== 'number') {
+          return res.status(400).json({
+            success: false,
+            message: `Invalid price for product: ${item.productId.title}`,
+          })
+        }
+
+        totalAmount += item.quantity * price
+      }
+
+      if (typeof cart.cargoFee !== 'number' || cart.cargoFee < 0) {
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid cargo fee. Please check your cart.',
+        })
+      }
+
+      totalAmount += cart.cargoFee
+    }
 
     if (totalAmount <= 0) {
       return res.status(400).json({

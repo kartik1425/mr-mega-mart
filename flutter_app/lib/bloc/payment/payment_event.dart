@@ -7,4 +7,10 @@ abstract class PaymentEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class PaymentIntentRequested extends PaymentEvent {}
+class PaymentIntentRequested extends PaymentEvent {
+  final List<Map<String, dynamic>>? items;
+  const PaymentIntentRequested({this.items});
+
+  @override
+  List<Object?> get props => [items];
+}

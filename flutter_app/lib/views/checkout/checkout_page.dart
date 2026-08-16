@@ -11,6 +11,7 @@ import 'package:mrmegamart_app/bloc/payment/payment_bloc.dart';
 import 'package:mrmegamart_app/bloc/payment/payment_event.dart';
 import 'package:mrmegamart_app/bloc/payment/payment_state.dart';
 import 'package:mrmegamart_app/components/app_bar_with_back_button.dart';
+import 'package:mrmegamart_app/models/cart/cart.dart';
 import 'package:mrmegamart_app/theme/colors.dart';
 import '../../bloc/address/address_state.dart';
 import '../../components/checkout/checkout_address_section.dart';
@@ -20,7 +21,9 @@ import '../../components/buttons/custom_button.dart';
 import 'package:mrmegamart_app/services/orders_api_service.dart';
 
 class CheckoutPage extends StatefulWidget {
-  const CheckoutPage({super.key});
+  final CartItem? directItem;
+
+  const CheckoutPage({super.key, this.directItem});
 
   @override
   State<CheckoutPage> createState() => _CheckoutPageState();
@@ -40,7 +43,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
     _cartBloc = GetCartBloc();
     _paymentBloc = PaymentBloc();
     _fetchDefaultAddress();
-    _fetchCart();
+    if (widget.directItem == null) {
+      _fetchCart();
+    }
   }
 
   @override
@@ -105,6 +110,88 @@ class _CheckoutPageState extends State<CheckoutPage> {
     }
   }
 
+  Widget _buildCheckoutContent(Cart cart) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 10),
+          CheckoutAddressSection(
+            onEditAddress: (address) {
+              _navigateToAddressForm(address: address);
+            },
+          ),
+          const SizedBox(height: 20),
+          const DeliveryDateSection(),
+          const SizedBox(height: 20),
+
+          // Payment Method Options Card
+          Container(
+            padding: const EdgeInsets.all(16.0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(14.0),
+              border: Border.all(color: AppColors.border, width: 1.0),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Select Payment Method',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: AppColors.textPrimary),
+                ),
+                const SizedBox(height: 10.0),
+                RadioListTile<String>(
+                  value: 'COD',
+                  groupValue: _paymentMethod,
+                  activeColor: AppColors.primary,
+                  contentPadding: EdgeInsets.zero,
+                  title: const Row(
+                    children: [
+                      Icon(Icons.money_rounded, color: AppColors.primary, size: 20),
+                      SizedBox(width: 8),
+                      Text('Cash on Delivery (COD)', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                    ],
+                  ),
+                  subtitle: const Text('Pay when your groceries arrive', style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+                  onChanged: (val) {
+                    setState(() {
+                      _paymentMethod = val!;
+                    });
+                  },
+                ),
+                const Divider(height: 1),
+                RadioListTile<String>(
+                  value: 'CARD',
+                  groupValue: _paymentMethod,
+                  activeColor: AppColors.primary,
+                  contentPadding: EdgeInsets.zero,
+                  title: const Row(
+                    children: [
+                      Icon(Icons.credit_card_rounded, color: AppColors.primary, size: 20),
+                      SizedBox(width: 8),
+                      Text('Online Payment (Card / Stripe / UPI)', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                    ],
+                  ),
+                  subtitle: const Text('Secure instant checkout', style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+                  onChanged: (val) {
+                    setState(() {
+                      _paymentMethod = val!;
+                    });
+                  },
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 20),
+          OrderSummarySection(cart: cart),
+          const SizedBox(height: 20),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -116,111 +203,41 @@ class _CheckoutPageState extends State<CheckoutPage> {
       child: Scaffold(
         backgroundColor: AppColors.surface,
         appBar: AppBarWithBackButton(
-          title: "Checkout",
+          title: widget.directItem != null ? "Buy Now Checkout" : "Checkout",
           onBackClicked: () => context.pop(),
         ),
-        body: BlocBuilder<GetCartBloc, GetCartState>(
-          builder: (context, cartState) {
-            if (cartState.isLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            if (cartState.isFailure) {
-              return Center(
-                child: Text(
-                  "Error loading cart: ${cartState.errorMessage}",
-                  style: const TextStyle(color: Colors.red),
+        body: widget.directItem != null
+            ? _buildCheckoutContent(
+                Cart(
+                  ownerId: 'direct_purchase',
+                  items: [widget.directItem!],
+                  updatedAt: DateTime.now(),
+                  cargoFee: (widget.directItem!.price * widget.directItem!.quantity) >= 500 ? 0.0 : 40.0,
                 ),
-              );
-            }
+              )
+            : BlocBuilder<GetCartBloc, GetCartState>(
+                builder: (context, cartState) {
+                  if (cartState.isLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
 
-            if (cartState.isSuccess && cartState.cartResponse != null) {
-              final cart = cartState.cartResponse!.cart;
-
-              return SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 10),
-                    CheckoutAddressSection(
-                      onEditAddress: (address) {
-                        _navigateToAddressForm(address: address);
-                      },
-                    ),
-                    const SizedBox(height: 20),
-                    const DeliveryDateSection(),
-                    const SizedBox(height: 20),
-
-                    // Payment Method Options Card
-                    Container(
-                      padding: const EdgeInsets.all(16.0),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(14.0),
-                        border: Border.all(color: AppColors.border, width: 1.0),
+                  if (cartState.isFailure) {
+                    return Center(
+                      child: Text(
+                        "Error loading cart: ${cartState.errorMessage}",
+                        style: const TextStyle(color: Colors.red),
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Select Payment Method',
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: AppColors.textPrimary),
-                          ),
-                          const SizedBox(height: 10.0),
-                          RadioListTile<String>(
-                            value: 'COD',
-                            groupValue: _paymentMethod,
-                            activeColor: AppColors.primary,
-                            contentPadding: EdgeInsets.zero,
-                            title: const Row(
-                              children: [
-                                Icon(Icons.money_rounded, color: AppColors.primary, size: 20),
-                                SizedBox(width: 8),
-                                Text('Cash on Delivery (COD)', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
-                              ],
-                            ),
-                            subtitle: const Text('Pay when your groceries arrive', style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
-                            onChanged: (val) {
-                              setState(() {
-                                _paymentMethod = val!;
-                              });
-                            },
-                          ),
-                          const Divider(height: 1),
-                          RadioListTile<String>(
-                            value: 'CARD',
-                            groupValue: _paymentMethod,
-                            activeColor: AppColors.primary,
-                            contentPadding: EdgeInsets.zero,
-                            title: const Row(
-                              children: [
-                                Icon(Icons.credit_card_rounded, color: AppColors.primary, size: 20),
-                                SizedBox(width: 8),
-                                Text('Online Payment (Card / Stripe / UPI)', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
-                              ],
-                            ),
-                            subtitle: const Text('Secure instant checkout', style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
-                            onChanged: (val) {
-                              setState(() {
-                                _paymentMethod = val!;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    OrderSummarySection(cart: cart),
-                    const SizedBox(height: 20),
-                  ],
-                ),
-              );
-            }
+                    );
+                  }
 
-            return const Center(child: Text("Cart is empty."));
-          },
-        ),
+                  if (cartState.isSuccess && cartState.cartResponse != null) {
+                    final cart = cartState.cartResponse!.cart;
+                    return _buildCheckoutContent(cart);
+                  }
+
+                  return const Center(child: Text("Cart is empty."));
+                },
+              ),
         bottomNavigationBar: SafeArea(
           child: BlocConsumer<PaymentBloc, PaymentState>(
             listener: (context, state) {
@@ -244,7 +261,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                       textColor: Colors.white,
                       color: AppColors.primary,
                       isLoading: _isProcessingCod || state.isLoading,
-                      onClick: () {
+                      onClick: () async {
                         if (_isProcessingCod || state.isLoading) return;
                         if (!hasDefaultAddress) {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -256,44 +273,51 @@ class _CheckoutPageState extends State<CheckoutPage> {
                           return;
                         }
 
+                        final itemsPayload = widget.directItem != null
+                            ? [
+                                {
+                                  'productId': widget.directItem!.productId,
+                                  'quantity': widget.directItem!.quantity,
+                                  'price': widget.directItem!.price,
+                                }
+                              ]
+                            : null;
+
                         if (_paymentMethod == 'COD') {
                           setState(() { _isProcessingCod = true; });
-                          OrdersApiService().createCodOrder().then((res) {
+                          try {
+                            final res = await OrdersApiService().createCodOrder(items: itemsPayload);
                             if (!mounted) return;
                             setState(() { _isProcessingCod = false; });
                             final order = res['order'];
                             final paymentId = order != null && order['paymentId'] != null
                                 ? order['paymentId'].toString()
                                 : 'COD-${DateTime.now().millisecondsSinceEpoch}';
-                            if (mounted) {
-                              context.goNamed(
-                                'paymentSuccessful',
-                                pathParameters: {
-                                  'paymentIntentId': paymentId,
-                                },
-                              );
-                            }
-                          }).catchError((err) {
+                            context.goNamed(
+                              'paymentSuccessful',
+                              pathParameters: {
+                                'paymentIntentId': paymentId,
+                              },
+                            );
+                          } catch (err) {
                             if (!mounted) return;
                             setState(() { _isProcessingCod = false; });
-                            if (mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text("Failed to place COD order: ${err.toString().replaceAll('Exception: ', '')}"),
-                                  backgroundColor: AppColors.error,
-                                ),
-                              );
-                            }
-                          });
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text("Failed to place COD order: ${err.toString().replaceAll('Exception: ', '')}"),
+                                backgroundColor: AppColors.error,
+                              ),
+                            );
+                          }
                         } else {
-                          context.read<PaymentBloc>().add(PaymentIntentRequested());
+                          context.read<PaymentBloc>().add(PaymentIntentRequested(items: itemsPayload));
                         }
                       },
                     ),
                   );
                 },
               );
-            }
+            },
           ),
         ),
       ),

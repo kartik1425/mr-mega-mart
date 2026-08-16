@@ -68,12 +68,12 @@ class OrdersApiService{
     }
   }
 
-  Future<Map<String, dynamic>> createCodOrder() async {
+  Future<Map<String, dynamic>> createCodOrder({List<Map<String, dynamic>>? items}) async {
     try {
       final response = await _networkingManager.post(
         endpoint: ApiEndpoints.createCodOrder,
         addAuthToken: true,
-        body: {},
+        body: items != null && items.isNotEmpty ? {'items': items} : {},
       );
       return response;
     } catch (e) {

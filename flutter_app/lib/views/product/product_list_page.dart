@@ -14,6 +14,7 @@ import 'package:mrmegamart_app/theme/colors.dart';
 import '../../components/filter_bottom_sheet.dart';
 import '../../components/product_list_action_button.dart';
 import '../../models/product/product_query_params.dart';
+import '../../utils/auth_check.dart';
 
 class ProductListPage extends StatefulWidget {
   final String? categoryId;
@@ -372,11 +373,19 @@ class _ProductListPageState extends State<ProductListPage> {
                             onProductClicked: (id) {
                               _handlePop(context, id);
                             },
-                            onAddToCart: () {
+                            onAddToCart: () async {
                               if (!productInCart) {
+                                final authenticated = await isAuthenticated();
+                                if (!context.mounted) return;
+                                if (!authenticated) {
+                                  context.pushNamed('login');
+                                  return;
+                                }
                                 context
                                     .read<AddCartItemOnFeedBloc>()
                                     .add(AddFeedItemEvent(productId: product.id));
+                              } else {
+                                context.pushNamed('cart');
                               }
                             },
                             onLikeTap: () {

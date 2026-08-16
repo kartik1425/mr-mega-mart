@@ -7,9 +7,9 @@ class PaymentRepository {
 
   PaymentRepository(this.paymentApiService);
 
-  Future<CreatePaymentIntentResponse> createPaymentIntent() async {
+  Future<CreatePaymentIntentResponse> createPaymentIntent({List<Map<String, dynamic>>? items}) async {
     try {
-      final CreatePaymentIntentResponse response = await paymentApiService.createPaymentIntent();
+      final CreatePaymentIntentResponse response = await paymentApiService.createPaymentIntent(items: items);
       return response;
     } catch (e) {
       throw Exception('Failed to create payment intent: $e');

@@ -9,6 +9,7 @@ import 'package:mrmegamart_app/bloc/cart/operations/feed/add_cart_item_on_feed_e
 import 'package:mrmegamart_app/bloc/cart/operations/feed/add_cart_item_on_feed_state.dart';
 import 'package:mrmegamart_app/components/product_card.dart';
 import 'package:mrmegamart_app/theme/colors.dart';
+import 'package:mrmegamart_app/utils/auth_check.dart';
 
 class BestOfProductsView extends StatefulWidget {
   final String period;
@@ -139,11 +140,19 @@ class _BestOfProductsViewState extends State<BestOfProductsView> {
                       onProductClicked: (id) {
                         _handleProductTap(context, id);
                       },
-                      onAddToCart: () {
+                      onAddToCart: () async {
                         if (!productInCart) {
+                          final authenticated = await isAuthenticated();
+                          if (!context.mounted) return;
+                          if (!authenticated) {
+                            context.pushNamed('login');
+                            return;
+                          }
                           context
                               .read<AddCartItemOnFeedBloc>()
                               .add(AddFeedItemEvent(productId: product.id));
+                        } else {
+                          context.pushNamed('cart');
                         }
                       },
                       onLikeTap: () {

@@ -15,7 +15,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     emit(PaymentState.initial());
     emit(state.copyWith(isLoading: true));
     try {
-      final response = await paymentRepository.createPaymentIntent();
+      final response = await paymentRepository.createPaymentIntent(items: event.items);
       emit(state.copyWith(isLoading: false, isSuccess: true, createPaymentIntentResponse: response, errorMessage: null, isFailure: false));
     } catch (error) {
       emit(state.copyWith(isLoading: false, isFailure: true, errorMessage: error.toString()));

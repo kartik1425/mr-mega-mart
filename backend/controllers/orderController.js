@@ -9,40 +9,73 @@ exports.createCodOrder = async (req, res) => {
   try {
     const userId = req.user.id
 
-    const cart = await Cart.findOne({ ownerId: userId })
-    if (!cart || !cart.items || cart.items.length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: 'Cart is empty.',
-      })
-    }
-
     const defaultAddress = await UserAddress.findOne({ userId, isDefault: true })
     if (!defaultAddress) {
       return res.status(400).json({
         success: false,
-        message: 'No default address found.',
+        message: 'No default address found. Please add a delivery address.',
       })
     }
 
     let amount = 0
     const items = []
-    
-    for (const item of cart.items) {
-      const product = await Product.findById(item.productId)
-      if (product) {
-        const itemPrice = product.price || 0
-        items.push({
-          productId: item.productId,
-          quantity: item.quantity,
-          price: itemPrice
-        })
-        amount += (itemPrice * item.quantity)
+    let isDirectPurchase = false
+
+    if (req.body && req.body.items && Array.isArray(req.body.items) && req.body.items.length > 0) {
+      // Direct Purchase Mode (Buy Now for specific item)
+      isDirectPurchase = true
+      for (const item of req.body.items) {
+        const product = await Product.findById(item.productId)
+        if (product) {
+          const itemPrice = product.salePrice ?? product.price ?? item.price ?? 0
+          const qty = parseInt(item.quantity, 10) || 1
+          items.push({
+            productId: item.productId,
+            quantity: qty,
+            price: itemPrice,
+          })
+          amount += (itemPrice * qty)
+        }
       }
+      const deliveryFee = amount >= 500 ? 0 : 40
+      amount += deliveryFee
+    } else {
+      // Regular Cart Checkout Mode
+      const cart = await Cart.findOne({ ownerId: userId })
+      if (!cart || !cart.items || cart.items.length === 0) {
+        return res.status(400).json({
+          success: false,
+          message: 'Cart is empty.',
+        })
+      }
+
+      for (const item of cart.items) {
+        const product = await Product.findById(item.productId)
+        if (product) {
+          const itemPrice = product.salePrice ?? product.price ?? 0
+          items.push({
+            productId: item.productId,
+            quantity: item.quantity,
+            price: itemPrice,
+          })
+          amount += (itemPrice * item.quantity)
+        }
+      }
+
+      const deliveryInfo = await calculateDeliveryFeeForCart(cart, defaultAddress)
+      amount += deliveryInfo.deliveryFee
+
+      // Clear persistent cart ONLY on full cart checkout
+      cart.items = []
+      await cart.save()
     }
 
-    const deliveryInfo = await calculateDeliveryFeeForCart(cart, defaultAddress)
-    amount += deliveryInfo.deliveryFee
+    if (items.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'No valid products found for order.',
+      })
+    }
 
     const paymentId = 'COD-' + Date.now()
     const order = new Order({
@@ -54,19 +87,15 @@ exports.createCodOrder = async (req, res) => {
       paymentId,
       paymentIntentId: paymentId,
       deliveryAddress: defaultAddress._id,
-      status: 'pending'
+      status: 'pending',
     })
 
     await order.save()
-    
-    // Clear cart
-    cart.items = []
-    await cart.save()
 
     res.status(201).json({
       success: true,
       order,
-      message: 'COD order placed successfully'
+      message: 'COD order placed successfully',
     })
   } catch (error) {
     logger.error({ event: 'create_cod_order_error', requestId: req.id, error: error.message }, 'Error creating COD order')
